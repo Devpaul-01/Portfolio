@@ -6,21 +6,21 @@
 // one consistent portfolio, and so StudyHub can be split into its own
 // project file later without restructuring.
 
-import studyhubSystemArchitecture from "../assets/studyhub-system-architecture.png";
-import studyhubOnboardingMatchPreview from "../assets/studyhub-onboarding-match-preview.png";
-import studyhubConnectionsCompatibility from "../assets/studyhub-connections-compatibility.png";
-import studyhubThreadAiMention from "../assets/studyhub-thread-ai-mention.png";
-import studyhubHomeworkMarketplace from "../assets/studyhub-homework-marketplace.png";
-import studyhubLeaderboardRank from "../assets/studyhub-leaderboard-rank.png";
-import studyhubReputationHistory from "../assets/studyhub-reputation-history.png";
-import studyhubRefreshTokenRotation from "../assets/studyhub-refresh-token-rotation.png";
-import studyhubAnnotatedReputationLedger from "../assets/studyhub-annotated-reputation-ledger.png";
-import studyhubNotificationFanout from "../assets/studyhub-notification-fanout.png";
-import studyhubAiProviderRouting from "../assets/studyhub-ai-provider-routing.png";
-import studyhubCacheSplitPattern from "../assets/studyhub-cache-split-pattern.png";
-import studyhubAnnotatedLeaderboardCache from "../assets/studyhub-annotated-leaderboard-cache.png";
-import studyhubWebsocketPresence from "../assets/studyhub-websocket-presence.png";
-import studyhubReliabilityLockingReconciliation from "../assets/studyhub-reliability-locking-reconciliation.png";
+import studyhubSystemArchitecture from "../assets/system-architecture.png";
+import studyhubOnboardingMatchPreview from "../assets/onboarding-match-preview.png";
+import studyhubConnectionsCompatibility from "../assets/connections-compatibility.png";
+import studyhubThreadAiMention from "../assets/thread-ai-mention.png";
+import studyhubHomeworkMarketplace from "../assets/homework-marketplace.png";
+import studyhubLeaderboardRank from "../assets/leaderboard-rank.png";
+import studyhubReputationHistory from "../assets/reputation-history.png";
+import studyhubRefreshTokenRotation from "../assets/refresh-token-rotation.png";
+import studyhubAnnotatedReputationLedger from "../assets/annotated-reputation-ledger.png";
+import studyhubNotificationFanout from "../assets/notification-fanout.png";
+import studyhubAiProviderRouting from "../assets/ai-provider-routing.png";
+import studyhubCacheSplitPattern from "../assets/cache-split-pattern.png";
+import studyhubAnnotatedLeaderboardCache from "../assets/annotated-leaderboard-cache.png";
+import studyhubWebsocketPresence from "../assets/websocket-presence.png";
+import studyhubReliabilityLockingReconciliation from "../assets/reliability-locking-reconciliation.png";
 
 // -- links --------------------------------------------------------------
 
