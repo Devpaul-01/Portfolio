@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* Self-hosted fonts — bundled at build time, no runtime fetch to a
+   third-party host. More robust for a portfolio piece than a Google
+   Fonts <link>/@import: no external request, no flash of fallback font. */
+@import "@fontsource/fraunces/400.css";
+@import "@fontsource/fraunces/500.css";
+@import "@fontsource/fraunces/600.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource-variable/jetbrains-mono";
+
+@theme {
+  /* ---- palette (named per design plan) ---- */
+  --color-ink: #14181c;
+  --color-paper: #f7f6f3;
+  --color-ledger-line: #ddd9d0;
+  --color-confirmed: #1f6f4a;
+  --color-confirmed-soft: #e4efe9;
+  --color-pending: #9a6b23;
+  --color-pending-soft: #f3e9da;
+  --color-slate: #5b6470;
+  --color-slate-soft: #8a919b;
+
+  /* ---- type roles ---- */
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --breakpoint-xs: 480px;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible keyboard focus, everywhere — never suppressed */
+:focus-visible {
+  outline: 2px solid var(--color-confirmed);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---- ledger-motif utilities used across sections ---- */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-slate);
+}
+
+.stat-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.hairline {
+  border-color: var(--color-ledger-line);
+}
+
+/* thin scrollbar for horizontally-scrollable diagram containers on mobile */
+.diagram-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ledger-line) transparent;
+}
+.diagram-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.diagram-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-ledger-line);
+  border-radius: 3px;
+}
