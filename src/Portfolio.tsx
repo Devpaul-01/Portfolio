@@ -5,6 +5,7 @@ import Skills from "./sections/Skills";
 import OwnershipAndMotivation from "./sections/OwnershipAndMotivation";
 import KithProject from "./projects/KithProject";
 import StudyHubProject from "./projects/StudyHubProject";
+import FounderSalesProject from "./projects/FounderSalesProject";
 import Contact from "./sections/Contact";
 import { contact, identity } from "./content/portfolioContent";
 
@@ -57,6 +58,25 @@ const sectionIds = [
   { id: "studyhub-stack", label: "§02 STACK" },
   { id: "studyhub-numbers", label: "§02 NUMBERS" },
   { id: "studyhub-closing", label: "§02 SOURCE" },
+  // -- FounderSales project block --
+  { id: "foundersales-hero", label: "§03 FOUNDERSALES" },
+  { id: "foundersales-problem", label: "§03 THE PROBLEM" },
+  { id: "foundersales-model", label: "§03 THE MODEL" },
+  { id: "foundersales-surface", label: "§03 THE SURFACE" },
+  { id: "foundersales-ai", label: "§03 AI RELIABILITY" },
+  { id: "foundersales-redis", label: "§03 DISTRIBUTED STATE" },
+  { id: "foundersales-jobs", label: "§03 BACKGROUND JOBS" },
+  { id: "foundersales-costgate", label: "§03 COST GATING" },
+  { id: "foundersales-practice", label: "§03 PRACTICE ENGINE" },
+  { id: "foundersales-metrics", label: "§03 METRICS VS INSIGHTS" },
+  { id: "foundersales-data", label: "§03 DATA ARCHITECTURE" },
+  { id: "foundersales-bugs", label: "§03 BUGS I FOUND" },
+  { id: "foundersales-reliability", label: "§03 RELIABILITY" },
+  { id: "foundersales-architecture", label: "§03 ARCHITECTURE" },
+  { id: "foundersales-gaps", label: "§03 HONEST GAPS" },
+  { id: "foundersales-stack", label: "§03 STACK" },
+  { id: "foundersales-numbers", label: "§03 NUMBERS" },
+  { id: "foundersales-closing", label: "§03 SOURCE" },
   // -- shell close --
   { id: "contact", label: "§00 CONTACT" },
 ];
@@ -80,6 +100,7 @@ export default function Portfolio() {
         <OwnershipAndMotivation />
         <KithProject />
         <StudyHubProject />
+        <FounderSalesProject />
         <Contact />
       </main>
     </div>
