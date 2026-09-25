@@ -28,8 +28,8 @@ export const links = {
   ciBadge:
     "https://github.com/Devpaul-01/Kith/actions/workflows/test.yml/badge.svg",
   ciWorkflow: "https://github.com/Devpaul-01/Kith/actions/workflows/test.yml",
-  architectureDoc: "https://github.com/Devpaul-01/Kith/blob/main/ARCHITECTURE.md",
-  securityDoc: "https://github.com/Devpaul-01/Kith/blob/main/SECURITY.md",
+  architectureDoc: "https://github.com/Devpaul-01/Kith/blob/main/docs/ARCHITECTURE.md",
+  securityDoc: "https://github.com/Devpaul-01/Kith/blob/main/docs/SECURITY.md",
   adrIndex: "https://github.com/Devpaul-01/Kith/blob/main/README.md",
 };
 
