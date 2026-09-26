@@ -57,7 +57,28 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           {project.title}
         </h3>
 
-        <p className="mt-3 text-sm leading-relaxed text-ink/75 sm:text-[15px]">
+        {/* Engineering-framed subtitle, right under the project name. */}
+        <p
+          className={`mt-1.5 font-mono tracking-wide text-slate ${
+            featured ? "text-sm sm:text-base" : "text-xs"
+          }`}
+        >
+          {project.engineeringSubtitle}
+        </p>
+
+        {/* The hook sentence. This is what a backend/distributed-systems
+            reader scans for first — specific mechanisms, not a product
+            pitch. Leads with "How I..." per project. */}
+        <p
+          className={`mt-3 leading-relaxed text-ink ${
+            featured ? "text-base sm:text-lg" : "text-sm"
+          }`}
+        >
+          {project.tagline}
+        </p>
+
+        {/* Product-framed summary, secondary. Still true, just not first. */}
+        <p className="mt-3 text-sm leading-relaxed text-ink/70 sm:text-[15px]">
           {project.summary}
         </p>
 
