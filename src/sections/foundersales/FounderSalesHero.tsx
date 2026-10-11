@@ -49,6 +49,24 @@ export default function FounderSalesHero() {
           </a>
         </div>
 
+        <p className="mt-6 max-w-xl text-xs leading-relaxed text-slate-soft">
+          Skimming? The strongest part of this build is the{" "}
+          <a
+            href="#foundersales-ai"
+            className="font-mono text-confirmed underline decoration-confirmed/30 underline-offset-2 transition-opacity hover:opacity-70"
+          >
+            four-provider AI fallback chain
+          </a>{" "}
+          and the{" "}
+          <a
+            href="#foundersales-redis"
+            className="font-mono text-confirmed underline decoration-confirmed/30 underline-offset-2 transition-opacity hover:opacity-70"
+          >
+            Redis-coordinated distributed state
+          </a>{" "}
+          behind it.
+        </p>
+
         <div className="mt-14 sm:mt-16">
           <ImageFigure
             src={hero.image}
