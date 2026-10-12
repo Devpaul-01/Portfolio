@@ -32,15 +32,26 @@ export const links = {
     "https://github.com/Devpaul-01/StudyHub/blob/main/PRODUCT_OVERVIEW.md",
   backgroundJobsDoc:
     "https://github.com/Devpaul-01/StudyHub/blob/main/BACKGROUND_JOBS.md",
-  // Added: StudyHub has a real two-job GitHub Actions suite
-  // (.github/workflows/tests.yml, unit + integration) — kithContent.ts
-  // and foundersalesContent.ts both already surface this via a CI badge
-  // next to their GitHub/live-demo links; this file was simply missing
-  // the fields that make that same, already-built UI turn on.
-  ciBadge:
-    "https://github.com/Devpaul-01/StudyHub/actions/workflows/tests.yml/badge.svg",
-  ciWorkflow:
-    "https://github.com/Devpaul-01/StudyHub/actions/workflows/tests.yml",
+  // StudyHub's CI suite runs as two separate GitHub Actions workflows
+  // (unit-tests.yml, integration-tests.yml), so it gets two badges instead
+  // of the single ciBadge/ciWorkflow pair kithContent.ts and
+  // foundersalesContent.ts use for their single combined workflow.
+  ciBadges: [
+    {
+      label: "Unit Tests",
+      badge:
+        "https://github.com/Devpaul-01/StudyHub/actions/workflows/unit-tests.yml/badge.svg",
+      workflow:
+        "https://github.com/Devpaul-01/StudyHub/actions/workflows/unit-tests.yml",
+    },
+    {
+      label: "Integration Tests",
+      badge:
+        "https://github.com/Devpaul-01/StudyHub/actions/workflows/integration-tests.yml/badge.svg",
+      workflow:
+        "https://github.com/Devpaul-01/StudyHub/actions/workflows/integration-tests.yml",
+    },
+  ],
 };
 
 // -- hero -----------------------------------------------------------------

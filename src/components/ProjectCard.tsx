@@ -166,17 +166,31 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               Live demo
             </a>
           )}
-          {project.ciBadge && project.ciWorkflow && (
-            <a
-              href={project.ciWorkflow}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`${project.title} CI build status`}
-              className="inline-block"
-            >
-              <img src={project.ciBadge} alt="" className="h-5" />
-            </a>
-          )}
+          {project.ciBadges
+            ? project.ciBadges.map((ci) => (
+                <a
+                  key={ci.label}
+                  href={ci.workflow}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`${project.title} ${ci.label} build status`}
+                  className="inline-block"
+                >
+                  <img src={ci.badge} alt="" className="h-5" />
+                </a>
+              ))
+            : project.ciBadge &&
+              project.ciWorkflow && (
+                <a
+                  href={project.ciWorkflow}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`${project.title} CI build status`}
+                  className="inline-block"
+                >
+                  <img src={project.ciBadge} alt="" className="h-5" />
+                </a>
+              )}
         </div>
       </div>
     </article>

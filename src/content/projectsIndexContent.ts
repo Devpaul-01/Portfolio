@@ -68,6 +68,9 @@ export interface ProjectSummary {
   liveDemo?: string;
   ciBadge?: string;
   ciWorkflow?: string;
+  // For projects whose CI runs as more than one workflow (e.g. separate
+  // unit/integration jobs) instead of a single combined one.
+  ciBadges?: { label: string; badge: string; workflow: string }[];
 }
 
 export const projectsSection = {
@@ -220,8 +223,7 @@ export const projects: ProjectSummary[] = [
     status: studyHubHero.statusNote,
     github: studyHubLinks.github,
     liveDemo: studyHubLinks.liveDemo,
-    ciBadge: studyHubLinks.ciBadge,
-    ciWorkflow: studyHubLinks.ciWorkflow,
+    ciBadges: studyHubLinks.ciBadges,
   },
   {
     slug: "foundersales",
