@@ -150,7 +150,15 @@ export const projects: ProjectSummary[] = [
   {
     slug: "studyhub",
     index: "02",
-    featured: false,
+    // Audit change: was `false`. StudyHub's case-study content is the
+    // same caliber and sourcing rigor as Kith's (13 product domains, a
+    // 6-provider classified AI failover engine, a documented horizontal-
+    // scaling refactor, a real CI suite) — the compact/stacked card was
+    // underselling it relative to what the case study itself delivers.
+    // ProjectCard.tsx/Projects.tsx both already support more than one
+    // featured project (filter(), not find()), so this doesn't touch or
+    // demote Kith's own featured placement.
+    featured: true,
     eyebrow: "CASE STUDY 02",
     title: "StudyHub",
     engineeringSubtitle: "Multi-Worker Refactor & Classified AI Failover",
@@ -212,6 +220,8 @@ export const projects: ProjectSummary[] = [
     status: studyHubHero.statusNote,
     github: studyHubLinks.github,
     liveDemo: studyHubLinks.liveDemo,
+    ciBadge: studyHubLinks.ciBadge,
+    ciWorkflow: studyHubLinks.ciWorkflow,
   },
   {
     slug: "foundersales",

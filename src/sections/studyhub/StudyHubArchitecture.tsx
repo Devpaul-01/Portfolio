@@ -1,6 +1,7 @@
 import { architecture, links } from "../../content/studyHubContent";
 import SectionHeading from "../../components/SectionHeading";
 import DiagramFigure from "../../components/DiagramFigure";
+import ImageFigure from "../../components/ImageFigure";
 
 export default function StudyHubArchitecture() {
   return (
@@ -28,6 +29,17 @@ export default function StudyHubArchitecture() {
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink/80 sm:text-[15px]">
               {architecture.cacheBeat.caption}
             </p>
+
+            {/* Concrete proof next to the abstract pattern above: the same
+                split, annotated directly on the live product. */}
+            <div className="mt-6 max-w-xl">
+              <ImageFigure
+                src={architecture.cacheBeat.liveImage}
+                alt={architecture.cacheBeat.liveImageAlt}
+                caption={architecture.cacheBeat.liveImageCaption}
+                variant="compact"
+              />
+            </div>
           </div>
 
           <div>
