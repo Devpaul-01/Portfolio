@@ -38,6 +38,15 @@ export default function StudyHubHero() {
           >
             Live demo
           </a>
+          <a
+            href={links.ciWorkflow}
+            target="_blank"
+            rel="noreferrer"
+            className="ml-1 inline-block"
+            aria-label="View live CI build status"
+          >
+            <img src={links.ciBadge} alt="CI build status" className="h-6" />
+          </a>
         </div>
 
         <div className="mt-14 sm:mt-16">

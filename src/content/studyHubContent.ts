@@ -12,7 +12,6 @@ import studyhubConnectionsCompatibility from "../assets/connections-compatibilit
 import studyhubThreadAiMention from "../assets/thread-ai-mention.png";
 import studyhubHomeworkMarketplace from "../assets/homework-marketplace.png";
 import studyhubLeaderboardRank from "../assets/leaderboard-rank.png";
-import studyhubReputationHistory from "../assets/reputation-history.png";
 import studyhubRefreshTokenRotation from "../assets/refresh-token-rotation.png";
 import studyhubAnnotatedReputationLedger from "../assets/annotated-reputation-ledger.png";
 import studyhubNotificationFanout from "../assets/notification-fanout.png";
@@ -33,6 +32,15 @@ export const links = {
     "https://github.com/Devpaul-01/StudyHub/blob/main/PRODUCT_OVERVIEW.md",
   backgroundJobsDoc:
     "https://github.com/Devpaul-01/StudyHub/blob/main/BACKGROUND_JOBS.md",
+  // Added: StudyHub has a real two-job GitHub Actions suite
+  // (.github/workflows/tests.yml, unit + integration) — kithContent.ts
+  // and foundersalesContent.ts both already surface this via a CI badge
+  // next to their GitHub/live-demo links; this file was simply missing
+  // the fields that make that same, already-built UI turn on.
+  ciBadge:
+    "https://github.com/Devpaul-01/StudyHub/actions/workflows/tests.yml/badge.svg",
+  ciWorkflow:
+    "https://github.com/Devpaul-01/StudyHub/actions/workflows/tests.yml",
 };
 
 // -- hero -----------------------------------------------------------------
@@ -230,9 +238,15 @@ export const gamification = {
     "Every point change is backed by an auditable reputation-history row recording the before/after value and the action that caused it. This is what makes \u201cwhy did my reputation change\u201d answerable after the fact, and what makes the reputation total trustworthy as something other than a bare mutable counter that could silently drift.",
     "18 badges span engagement, helpfulness, and consistency, each with explicit criteria checked against real activity counts \u2014 not manually awarded. Streaks (login and help-giving) track both a current value and a longest-ever value, and can be frozen, a deliberate design choice that keeps a genuinely engaged user from losing a long streak over a single missed day.",
   ],
-  image: studyhubReputationHistory,
+  // Swapped for the annotated version of the same screenshot (audit fix:
+  // this asset was already imported into this file but never rendered
+  // anywhere — a live TS6133/no-unused-vars warning). Same underlying
+  // screenshot as before; the in-product "SYSTEM NOTE" callout now
+  // reinforces the exact claim the caption below already makes, instead
+  // of the reader having to take the caption's word for it.
+  image: studyhubAnnotatedReputationLedger,
   imageAlt:
-    "Reputation history showing individual point-change events with before/after totals",
+    "Reputation history with an annotated system note explaining the append-only ReputationHistory ledger, showing individual point-change events with before/after totals",
   imageCaption:
     "The +189 / -0 / 189 totals shown in the profile UI aren't read from a stored field \u2014 they're computed live by summing history rows, which is what makes the running total independently auditable.",
   secondaryImage: studyhubLeaderboardRank,
@@ -311,6 +325,15 @@ export const architecture = {
       "Shared cached page plus per-viewer live overlay diagram — the pattern behind the leaderboard, badges, and top-earners rankings",
     caption:
       "The leaderboard's ranked list and point totals come from a 60-second shared cache; the \u201cYour rank\u201d card, connection status on each row, and highlighted \u201cyou are here\u201d position are computed per request and never touch that cache.",
+    // Added: the concrete, live-product proof for the abstract diagram
+    // above — same asset-unused-warning fix as gamification.image. Shown
+    // second, after the pattern diagram, so the order reads "here's the
+    // idea, here's it actually running."
+    liveImage: studyhubAnnotatedLeaderboardCache,
+    liveImageAlt:
+      "StudyHub's live leaderboard page with an annotated system note pointing out the 60-second Redis-cached shared page plus the per-request live overlay",
+    liveImageCaption:
+      "The same split, annotated directly on the shipped leaderboard page rather than only in a diagram.",
   },
   presenceBeat: {
     image: studyhubWebsocketPresence,
