@@ -19,10 +19,12 @@
 
 import { links as kithLinks } from "./kithContent";
 import { links as studyHubLinks, hero as studyHubHero } from "./studyHubContent";
+import { links as agentBrokerLinks } from "./agentBrokerContent";
 import { links as founderSalesLinks } from "./foundersalesContent";
 
 import kithHeroImage from "../assets/dashboard-full-overview.png";
 import studyHubHeroImage from "../assets/system-architecture.png";
+import agentBrokerImage from "../assets/agent-broker-architecture.svg";
 import founderSalesHeroImage from "../assets/home-dashboard.png";
 
 export interface ProjectHighlight {
@@ -38,7 +40,7 @@ export interface ProjectStat {
 }
 
 export interface ProjectSummary {
-  slug: "kith" | "studyhub" | "foundersales";
+  slug: "kith" | "studyhub" | "agent-broker" | "foundersales";
   index: string; // "01"
   featured: boolean;
   eyebrow: string;
@@ -75,7 +77,7 @@ export interface ProjectSummary {
 
 export const projectsSection = {
   eyebrow: "§00 PROJECTS",
-  heading: "Three systems, built solo. Each one a different kind of hard.",
+  heading: "Four projects, built solo. Each one a different kind of hard.",
   intro:
     "Each case study goes into the architecture, the decisions behind it, and the parts that are honestly not finished.",
 };
@@ -226,10 +228,66 @@ export const projects: ProjectSummary[] = [
     ciBadges: studyHubLinks.ciBadges,
   },
   {
-    slug: "foundersales",
+    slug: "agent-broker",
     index: "03",
-    featured: false,
+    featured: true,
     eyebrow: "CASE STUDY 03",
+    title: "Agent Broker",
+    engineeringSubtitle: "Cross-Process Budget, Depth & Retry Coordination",
+    // Hook: agentBrokerContent.stories (admission / reconciliation / identity)
+    // + tests.intro (real forked processes racing one Redis).
+    tagline:
+      "How I made a shared budget, a delegation-depth limit and a circuit breaker hold across independent Node.js processes: one atomic Redis Lua script per decision, checked by racing real forked processes.",
+    // agentBrokerContent.hero.subhead, shortened.
+    summary:
+      "A TypeScript library that lets multi-agent systems ask one shared coordinator whether a call is allowed before making it. Redis is the only shared dependency; the broker never touches the call itself.",
+    image: agentBrokerImage,
+    imageAlt:
+      "Architecture diagram: several application processes each embed the agent-broker library, and all of them coordinate through one shared Redis using atomic Lua scripts, while each calls the downstream target directly",
+    stack: ["TypeScript", "Node.js", "Redis", "Lua", "ioredis"],
+    highlights: [
+      {
+        text: "Admission is one Lua script: agent, circuit, budget and concurrency are checked and reserved together, so racing processes cannot both spend the same budget.",
+        source: "stories.items[0]",
+      },
+      {
+        text: "One reconciliation script serves both reportOutcome and the abandoned-reservation sweep, so a reservation is refunded and released exactly once.",
+        source: "stories.items[1]",
+      },
+      {
+        text: "Depth, root and budget lineage are derived from stored state inside the delegation script; callers cannot assert them.",
+        source: "stories.items[2]",
+      },
+    ],
+    stats: [
+      {
+        value: "188",
+        label: "passing tests across 27 files, run against a real Redis 7",
+        source: "stats[0]",
+      },
+      {
+        value: "3",
+        label: "failure-mode suites that drive real forked OS processes",
+        source: "stats[2]",
+      },
+      {
+        value: "4",
+        label: "Lua scripts, each a single atomic Redis operation",
+        source: "stats[1]",
+      },
+    ],
+    // agentBrokerContent.hero.statusNote, shortened.
+    status:
+      "Source-available, not yet on npm: the package is at 0.1.0 and has not been published, so the case study links to the repository only.",
+    github: agentBrokerLinks.github,
+    ciBadge: agentBrokerLinks.ciBadge,
+    ciWorkflow: agentBrokerLinks.ciWorkflow,
+  },
+  {
+    slug: "foundersales",
+    index: "04",
+    featured: false,
+    eyebrow: "CASE STUDY 04",
     title: "FounderSales",
     engineeringSubtitle: "Cost-Gated AI Pipeline & Distributed Failover",
     // Hook: costGating.heading/intro (decision made before the call) +

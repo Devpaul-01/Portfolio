@@ -3,6 +3,7 @@ import { useMemo, type ComponentType } from "react";
 import LedgerRule from "../components/LedgerRule";
 import KithProject from "../projects/KithProject";
 import StudyHubProject from "../projects/StudyHubProject";
+import AgentBrokerProject from "../projects/AgentBrokerProject";
 import FounderSalesProject from "../projects/FounderSalesProject";
 import Contact from "../sections/Contact";
 import { contact, identity } from "../content/portfolioContent";
@@ -10,12 +11,13 @@ import { projects } from "../content/projectsIndexContent";
 import {
   kithSectionIds,
   studyHubSectionIds,
+  agentBrokerSectionIds,
   founderSalesSectionIds,
   type SectionEntry,
 } from "../content/sectionIds";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
-type Slug = "kith" | "studyhub" | "foundersales";
+type Slug = "kith" | "studyhub" | "agent-broker" | "foundersales";
 
 // One entry per case study. The Project components are the existing
 // fragments, unchanged; this map is the only place that pairs a route with
@@ -26,6 +28,10 @@ const registry: Record<
 > = {
   kith: { Component: KithProject, sectionIds: kithSectionIds },
   studyhub: { Component: StudyHubProject, sectionIds: studyHubSectionIds },
+  "agent-broker": {
+    Component: AgentBrokerProject,
+    sectionIds: agentBrokerSectionIds,
+  },
   foundersales: {
     Component: FounderSalesProject,
     sectionIds: founderSalesSectionIds,
