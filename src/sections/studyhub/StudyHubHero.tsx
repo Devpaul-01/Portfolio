@@ -16,8 +16,8 @@ export default function StudyHubHero() {
           {hero.subhead}
         </p>
 
-        <div className="mt-6 max-w-xl border-l-2 border-pending/40 bg-pending-soft/50 py-3 pl-5 pr-4">
-          <p className="eyebrow mb-1.5 !text-pending">Status</p>
+        <div className="mt-6 max-w-xl border-l-2 border-confirmed/40 bg-confirmed-soft/50 py-3 pl-5 pr-4">
+          <p className="eyebrow mb-1.5 !text-confirmed">Status</p>
           <p className="text-sm leading-relaxed text-ink/80">{hero.statusNote}</p>
         </div>
 

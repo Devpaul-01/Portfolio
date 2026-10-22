@@ -62,7 +62,7 @@ export const hero = {
   subhead:
     "StudyHub is a peer-to-peer academic platform built around one idea: reputation earned by helping other students should be the platform's actual currency. A Q&A feed, a connections-based social graph, group chat, a homework help marketplace, live co-study sessions, and a multi-provider AI assistant, all reinforcing the same reputation system. This page is a walk-through of the engineering behind it.",
   statusNote:
-    "Actively in development \u2014 core systems are functional and used daily while building, though the product is not yet feature-complete.",
+    "Not actively in development \u2014 feature-complete and built out. Development has concluded; the write-up below documents the finished system.",
   image: studyhubSystemArchitecture,
   imageAlt:
     "StudyHub system architecture: client, request perimeter, auth chain, application layer, async processing, real-time layer, data layer, and external services",

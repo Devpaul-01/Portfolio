@@ -277,9 +277,9 @@ export const projects: ProjectSummary[] = [
       },
     ],
     // agentBrokerContent.hero.statusNote, shortened.
-    status:
-      "Source-available, not yet on npm: the package is at 0.1.0 and has not been published, so the case study links to the repository only.",
+    status: "Published on npm as agent-broker, currently at v0.1.1.",
     github: agentBrokerLinks.github,
+    liveDemo: agentBrokerLinks.npm,
     ciBadge: agentBrokerLinks.ciBadge,
     ciWorkflow: agentBrokerLinks.ciWorkflow,
   },

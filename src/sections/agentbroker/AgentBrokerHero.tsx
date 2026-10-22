@@ -25,6 +25,14 @@ export default function AgentBrokerHero() {
             View source on GitHub
           </a>
           <a
+            href={links.npm}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-sm border border-ink/20 px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-ink/50"
+          >
+            View on npm
+          </a>
+          <a
             href={links.architectureDoc}
             target="_blank"
             rel="noreferrer"
@@ -44,8 +52,8 @@ export default function AgentBrokerHero() {
         </div>
 
         <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">
-          <div className="min-w-0 border-l-2 border-pending/40 bg-pending-soft/50 py-3 pl-5 pr-4">
-            <p className="eyebrow mb-1.5 !text-pending">Status — not yet on npm</p>
+          <div className="min-w-0 border-l-2 border-confirmed/40 bg-confirmed-soft/50 py-3 pl-5 pr-4">
+            <p className="eyebrow mb-1.5 !text-confirmed">Status — published on npm</p>
             <p className="text-sm leading-relaxed text-ink/80">{hero.statusNote}</p>
             <pre className="diagram-scroll mt-3 overflow-x-auto rounded-sm border border-ledger-line bg-white p-3 font-mono text-xs leading-relaxed text-ink">
               <code>{hero.buildCommand}</code>

@@ -18,6 +18,7 @@ const blob = (path: string) => `${REPO}/blob/main/${path}`;
 
 export const links = {
   github: REPO,
+  npm: "https://www.npmjs.com/package/agent-broker",
   ciBadge: `${REPO}/actions/workflows/ci.yml/badge.svg`,
   ciWorkflow: `${REPO}/actions/workflows/ci.yml`,
   architectureDoc: blob("docs/agent-broker-architecture.md"),
@@ -50,13 +51,10 @@ export const hero = {
   headline: "One shared answer to: is this agent call allowed right now?",
   subhead:
     "agent-broker is a TypeScript library that uses Redis to coordinate budget, delegation depth, concurrency and circuit-breaker state across independent Node.js processes — and checks that coordination by racing real forked processes against one Redis, not by mocking it.",
-  // Verified on 2026-10-13: registry.npmjs.org/agent-broker returns 404, and the
-  // repo CHANGELOG states nothing has been published. Update this block (and
-  // add an npm link) the day the package is actually published.
+  // Published to npm as `agent-broker`, version 0.1.1 (package.json on main).
   statusNote:
-    "Source-available, not yet on npm. package.json is at 0.1.0 and the repository's CHANGELOG says nothing has been published; the npm registry has no agent-broker package as of October 13, 2026. Build it from a clone for now:",
-  buildCommand:
-    "git clone https://github.com/Devpaul-01/agent-broker && cd agent-broker && npm ci && npm run build",
+    "Published on npm as agent-broker, currently at v0.1.1. Install it directly:",
+  buildCommand: "npm install agent-broker ioredis",
   statusFootnote: "Requires Node.js 22+ and a reachable Redis. ioredis is a peer dependency.",
   apiHeading: "The whole API shape, from the README quick start",
   apiSnippet: `const broker = createBroker({ redis });

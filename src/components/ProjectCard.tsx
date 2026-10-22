@@ -163,7 +163,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               rel="noreferrer"
               className="inline-flex items-center gap-2 rounded-sm border border-ink/20 px-4 py-2.5 text-sm font-medium text-ink transition-colors hover:border-ink/50"
             >
-              Live demo
+              {project.slug === "agent-broker" ? "View on npm" : "Live demo"}
             </a>
           )}
           {project.ciBadges
