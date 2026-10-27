@@ -8,6 +8,7 @@ import Tasks from "../sections/Tasks";
 import Disputes from "../sections/Disputes";
 import RecurringPools from "../sections/RecurringPools";
 import EngineeringJudgment from "../sections/EngineeringJudgment";
+import Measured from "../sections/Measured";
 import Reflections from "../sections/Reflections";
 import Reliability from "../sections/Reliability";
 import Security from "../sections/Security";
@@ -35,6 +36,7 @@ export default function KithProject() {
       <Disputes />
       <RecurringPools />
       <EngineeringJudgment />
+      <Measured />
       <Reflections />
       <Reliability />
       <Security />
