@@ -30,6 +30,7 @@ export const kithSectionIds: SectionEntry[] = [
   { id: "disputes", label: "§01 DISPUTES" },
   { id: "pools", label: "§01 RECURRING POOLS" },
   { id: "judgment", label: "§01 ENGINEERING JUDGMENT" },
+  { id: "measured", label: "§01 MEASURED, NOT CLAIMED" },
   { id: "reflections", label: "§01 REFLECTIONS" },
   { id: "reliability", label: "§01 RELIABILITY" },
   { id: "security", label: "§01 SECURITY" },

@@ -247,7 +247,7 @@ export const engineeringJudgment = {
   eyebrow: "§09 · ENGINEERING JUDGMENT",
   heading: "The decisions, not just the technologies.",
   intro:
-    "Eighteen numbered architecture decision records back this system \u2014 each with rejected alternatives and a stated trade-off. Four of the more differentiated ones, in the system's own terms.",
+    "Twenty-one numbered architecture decision records back this system \u2014 each with rejected alternatives and a stated trade-off. Four of the more differentiated ones, in the system's own terms.",
   callouts: [
     {
       title: "Could an attacker learn which workspaces exist without ever logging in?",
@@ -292,14 +292,66 @@ export const engineeringJudgment = {
   ],
 };
 
+// -- measured -------------------------------------------------------------
+
+export const measured = {
+  eyebrow: "§10 · MEASURED, NOT CLAIMED",
+  heading: "Four claims about this backend, checked against the real stack.",
+  intro:
+    "Rather than assert that the concurrency handling, idempotency, and immutability guarantees above hold, I built a small measurement harness — Postgres, PostgREST, and Redis running natively, with the real service layer and the real migrations — and ran each claim as an experiment. Every run is a timestamped JSON file with the exact command, git commit, and environment recorded. Failed attempts are kept, not deleted.",
+  callouts: [
+    {
+      title: "Does the idempotency key actually stop duplicate contributions under concurrency?",
+      problem:
+        "createEntry() catches the Postgres 23505 unique-violation race explicitly — but “handles duplicates” is an easy claim to make and a harder one to verify.",
+      decision:
+        "9 runs across concurrency 5, 15, and 30 (180 total concurrent calls sharing idempotency keys), against the real service layer, including its downstream audit-log and notification-queue calls. Result: 9/9 runs produced exactly one row per key, zero rejected promises — every losing caller got a clean idempotent-replay response, not a raw database error.",
+      reason:
+        "This was the strongest result of the four: a repeated, multi-concurrency test of the actual production code path with a 100% pass rate and a specific named mechanism, not a vague assurance.",
+      tag: "M2 · idempotency race",
+    },
+    {
+      title: "Can a direct database connection bypass the ledger's immutability rule?",
+      problem:
+        "The DB-level trigger on ledger_entries is meant to be a backstop even against the service-role key — but a backstop nobody has tried to break isn't a verified one.",
+      decision:
+        "A raw pg connection attempted a direct UPDATE on a confirmed entry's amount, bypassing ledger.service.js entirely. Rejected with Postgres error P0001 and a clear message naming the correction path instead. A legitimate status transition on the same row succeeded immediately after — the trigger blocks the specific mutation, not the row.",
+      reason:
+        "This is defense-in-depth doing its actual job: even full database privileges can't silently alter a confirmed financial record's amount, only its sanctioned status transitions.",
+      tag: "M3 · immutability trigger",
+    },
+    {
+      title: "How much does the Redis membership cache actually save, in milliseconds?",
+      problem:
+        "Workspace-membership checks run on nearly every authenticated request — caching them is a reasonable idea, but “faster” isn't a number.",
+      decision:
+        "300 sequential calls per path, 4 independent runs: p50 uncached held at 4.0–4.6ms, p50 cached at 0.26–0.32ms — a consistent ~14–16x speedup, avoiding two DB round-trips per hit. p95 uncached ran 8.1–8.8ms vs. 1.2–1.7ms cached in the same runs.",
+      reason:
+        "Measured locally (no production network latency in the uncached path), stated as a local benchmark rather than a production number — the honest version of this claim is still a strong one.",
+      tag: "M4 · cache latency",
+    },
+    {
+      title: "Does the concurrency-safe target RPC actually resolve contention gracefully?",
+      problem:
+        "set_contributor_target_atomic is supposed to prevent more than one current contribution target existing per participant under concurrent writers.",
+      decision:
+        "15 concurrency trials (5/25/50 concurrent callers) across 5 full runs: the invariant — exactly one current target — held every single time, for both the atomic RPC and a naive check-then-write. But the RPC isn't graceful under contention: most losing callers get a raw duplicate-key Postgres error rather than a clean retry, because a transaction blocked on the row lock re-checks under READ COMMITTED after the lock holder's row stops being current, and tries a fresh insert into an already-taken slot.",
+      reason:
+        "The honest result, kept rather than smoothed over: the correctness guarantee is real and verified, but “preventing race conditions” shouldn't be read as “handling them gracefully” — those are different claims, and only one of them is true here.",
+      tag: "M1 · target-set race",
+    },
+  ],
+  note: "Full methodology, raw results, and the one unplanned finding this surfaced — the integration suite's cleanup helper silently failing against the new immutability trigger — are in the repo's measurement scripts.",
+};
+
 // -- reliability --------------------------------------------------------------
 
 export const reliability = {
-  eyebrow: "§10 · RELIABILITY INFRASTRUCTURE",
+  eyebrow: "§11 · RELIABILITY INFRASTRUCTURE",
   heading: "Slow work stays off the request path \u2014 and failures leave a trace.",
-  body: "Nine Redis-backed BullMQ queues, each with a dedicated worker and its own concurrency tuning, move notifications, cycle generation, reminders, and exports out of the HTTP request/response cycle. A separate scheduler registers six cron-based jobs directly onto the queues their workers already listen on \u2014 by construction, not convention.",
+  body: "Nine Redis-backed BullMQ queues, each with a dedicated worker and its own concurrency tuning, move notifications, cycle generation, reminders, and exports out of the HTTP request/response cycle. A separate scheduler registers seven cron-based jobs directly onto the queues their workers already listen on \u2014 by construction, not convention.",
   testingNote:
-    "Three Jest projects (unit, integration, rate-limiting) run in CI on every push. The integration suite goes further than a local Docker Compose setup: it stands up PostgREST in front of test Postgres specifically because the app talks to Supabase through a PostgREST-compatible client in production \u2014 testing against raw Postgres would quietly miss that gap.",
+    "Three Jest projects exist (unit, integration, rate-limiting), each exercising the real service layer rather than mocks. Only the unit and frontend suites currently run in CI on every push \u2014 integration and rate-limit jobs are disabled in the workflow (flaky environment setup around PostgREST schema-cache timing), a known gap tracked openly rather than implied away. The integration suite still goes further than a bare-Postgres test would: it stands up PostgREST in front of test Postgres specifically because the app talks to Supabase through a PostgREST-compatible client in production.",
   beats: [
     {
       image: bullBoard,
@@ -329,7 +381,7 @@ export const reliability = {
 // -- security -------------------------------------------------------------
 
 export const security = {
-  eyebrow: "§11 · SECURITY & AUTHORIZATION",
+  eyebrow: "§12 · SECURITY & AUTHORIZATION",
   heading: "Three composable checks, and an honest boundary.",
   body: [
     "Every workspace-scoped request passes through three distinct middleware layers in order: authentication (a live Supabase JWT verification, not just a local signature check), workspace membership (Redis-cached, 404-not-403), and role authorization. Services re-check fine-grained, data-dependent rules underneath \u2014 a member editing their own profile can't smuggle in a role change through the same endpoint an admin uses.",
@@ -340,7 +392,7 @@ export const security = {
 // -- architecture -----------------------------------------------------------
 
 export const architecture = {
-  eyebrow: "§12 · FULL ARCHITECTURE",
+  eyebrow: "§13 · FULL ARCHITECTURE",
   heading: "The whole system, in one frame.",
   body: "A layered Express API \u2014 routes, middleware, controllers, services \u2014 backed by Supabase Postgres, with Redis serving three distinct roles (BullMQ's job store, fleet-wide rate limiting, and the membership cache) and no overlap between them. The API and the worker fleet can run as separate, independently-scaled processes or one combined process for local development, sharing the exact same service layer either way.",
   image: diagramSystemOverview,
@@ -353,7 +405,7 @@ export const architecture = {
 // -- stack --------------------------------------------------------------------
 
 export const stack = {
-  eyebrow: "§13 · STACK",
+  eyebrow: "§14 · STACK",
   heading: "Chosen to support the story above, not to fill a grid.",
   groups: [
     { role: "Backend", items: ["Node.js", "Express 4"] },
@@ -370,14 +422,14 @@ export const stack = {
 // -- numbers ------------------------------------------------------------------
 
 export const numbers = {
-  eyebrow: "§14 · BY THE NUMBERS",
+  eyebrow: "§15 · BY THE NUMBERS",
   stats: [
     { value: "9", label: "background job queues, each with a dedicated worker" },
-    { value: "6", label: "cron-scheduled jobs, registered directly onto their queues" },
-    { value: "18", label: "documented architecture decision records" },
+    { value: "7", label: "cron-scheduled jobs, registered directly onto their queues" },
+    { value: "21", label: "documented architecture decision records" },
     { value: "15", label: "REST resource groups in the versioned API" },
-    { value: "16", label: "notification templates across in-app, push, and email" },
-    { value: "3", label: "Jest test projects: unit, integration, and rate-limiting" },
+    { value: "18", label: "notification templates across in-app, push, and email" },
+    { value: "~14x", label: "p50 speedup from the Redis membership cache, measured across 4 runs" },
   ],
   ciNote: "Live build status from the repository's own CI workflow \u2014 not a static badge.",
 };
@@ -385,7 +437,7 @@ export const numbers = {
 // -- closing --------------------------------------------------------------
 
 export const closing = {
-  eyebrow: "§15 · CLOSING",
+  eyebrow: "§16 · CLOSING",
   heading: "The interesting part wasn't the screens.",
   body: "It was making the rules hold \u2014 across concurrent writes, scheduled automation, and a permission model with real consequences \u2014 as the product got more complex, not less.",
 };

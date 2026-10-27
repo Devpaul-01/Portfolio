@@ -92,10 +92,10 @@ export const projects: ProjectSummary[] = [
     engineeringSubtitle: "Concurrent Financial Ledger & Async Job Pipeline",
     // Hook: reliability.body ("Nine Redis-backed BullMQ queues... move
     // notifications, cycle generation, reminders, and exports out of the
-    // HTTP request/response cycle") + numbers.stats[2] (18 ADRs) +
+    // HTTP request/response cycle") + numbers.stats[2] (21 ADRs) +
     // disputes.intro (atomic transaction) + ledger.beats[1] (idempotency).
     tagline:
-      "How I built an append-only ledger with atomic dispute transactions, idempotency-key duplicate detection, and a 9-queue async job pipeline \u2014 backed by 18 documented architecture decisions.",
+      "How I built an append-only ledger with atomic dispute transactions, idempotency-key duplicate detection, and a 9-queue async job pipeline \u2014 backed by 21 documented architecture decisions and verified with a local measurement harness, not just asserted.",
     // kithContent.hero.headline + hero.subhead (trimmed) \u2014 kept as the
     // secondary line so the card still says what the product actually is.
     summary:

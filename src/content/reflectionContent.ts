@@ -8,7 +8,7 @@
 export const ownership = {
   eyebrow: "OWNERSHIP",
   heading:
-    "A family coordination platform for shared money and chores \u2014 backend, frontend, and the 18 architecture decision records documenting every major call along the way.",
+    "A family coordination platform for shared money and chores \u2014 backend, frontend, and the 21 architecture decision records documenting every major call along the way.",
   body: "Kith is a solo project. Every part of it \u2014 the API, the database design, the background job system, the full frontend that consumes it, and this page \u2014 is my own work, end to end.",
 };
 
