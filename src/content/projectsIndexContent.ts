@@ -84,18 +84,74 @@ export const projectsSection = {
 
 export const projects: ProjectSummary[] = [
   {
-    slug: "kith",
+    slug: "agent-broker",
     index: "01",
     featured: true,
     eyebrow: "CASE STUDY 01",
+    title: "Agent Broker",
+    engineeringSubtitle: "Cross-Process Budget, Depth & Retry Coordination",
+    // Hook: agentBrokerContent.stories (admission / reconciliation / identity)
+    // + tests.intro (real forked processes racing one Redis).
+    tagline:
+      "How I made a shared budget, a delegation-depth limit and a circuit breaker hold across independent Node.js processes: one atomic Redis Lua script per decision, checked by racing real forked processes.",
+    // agentBrokerContent.hero.subhead, shortened.
+    summary:
+      "A Redis-backed admission gate, published on npm and ported to Python, that lets multi-agent systems ask one shared coordinator whether a call is allowed before making it. A TypeScript process and a Python process can share one budget pool. The broker never touches the call itself.",
+    image: agentBrokerImage,
+    imageAlt:
+      "Architecture diagram: several application processes each embed the agent-broker library, and all of them coordinate through one shared Redis using atomic Lua scripts, while each calls the downstream target directly",
+    stack: ["TypeScript", "Python", "Node.js", "Redis", "Lua", "ioredis"],
+    highlights: [
+      {
+        text: "Admission is one Lua script: agent, circuit, budget and concurrency are checked and reserved together, so racing processes cannot both spend the same budget.",
+        source: "stories.items[0]",
+      },
+      {
+        text: "One reconciliation script serves both reportOutcome and the abandoned-reservation sweep, so a reservation is refunded and released exactly once.",
+        source: "stories.items[1]",
+      },
+      {
+        text: "Depth, root and budget lineage are derived from stored state inside the delegation script; callers cannot assert them.",
+        source: "stories.items[2]",
+      },
+    ],
+    stats: [
+      {
+        value: "188",
+        label: "passing tests across 27 files, run against a real Redis 7",
+        source: "stats[0]",
+      },
+      {
+        value: "3",
+        label: "failure-mode suites that drive real forked OS processes",
+        source: "stats[2]",
+      },
+      {
+        value: "4",
+        label: "Lua scripts, each a single atomic Redis operation",
+        source: "stats[1]",
+      },
+    ],
+    // agentBrokerContent.hero.statusNote, shortened.
+    status: "Published on npm as agent-broker, currently at v0.1.1.",
+    github: agentBrokerLinks.github,
+    liveDemo: agentBrokerLinks.npm,
+    ciBadges: agentBrokerLinks.ciBadges,
+    ciWorkflow: agentBrokerLinks.ciWorkflow,
+  },
+  {
+    slug: "kith",
+    index: "02",
+    featured: false,
+    eyebrow: "CASE STUDY 02",
     title: "Kith",
     engineeringSubtitle: "Concurrent Financial Ledger & Async Job Pipeline",
     // Hook: reliability.body ("Nine Redis-backed BullMQ queues... move
     // notifications, cycle generation, reminders, and exports out of the
-    // HTTP request/response cycle") + numbers.stats[2] (21 ADRs) +
+    // HTTP request/response cycle") + numbers.stats[2] (20 ADRs) +
     // disputes.intro (atomic transaction) + ledger.beats[1] (idempotency).
     tagline:
-      "How I built an append-only ledger with atomic dispute transactions, idempotency-key duplicate detection, and a 9-queue async job pipeline \u2014 backed by 21 documented architecture decisions and verified with a local measurement harness, not just asserted.",
+      "How I built an append-only ledger with atomic dispute transactions, idempotency-key duplicate detection, and a 9-queue async job pipeline \u2014 backed by 20 documented architecture decisions and verified with a local measurement harness, not just asserted.",
     // kithContent.hero.headline + hero.subhead (trimmed) \u2014 kept as the
     // secondary line so the card still says what the product actually is.
     summary:
@@ -154,7 +210,7 @@ export const projects: ProjectSummary[] = [
   },
   {
     slug: "studyhub",
-    index: "02",
+    index: "03",
     // Audit change: was `false`. StudyHub's case-study content is the
     // same caliber and sourcing rigor as Kith's (13 product domains, a
     // 6-provider classified AI failover engine, a documented horizontal-
@@ -163,8 +219,8 @@ export const projects: ProjectSummary[] = [
     // ProjectCard.tsx/Projects.tsx both already support more than one
     // featured project (filter(), not find()), so this doesn't touch or
     // demote Kith's own featured placement.
-    featured: true,
-    eyebrow: "CASE STUDY 02",
+    featured: false,
+    eyebrow: "CASE STUDY 03",
     title: "StudyHub",
     engineeringSubtitle: "Multi-Worker Refactor & Classified AI Failover",
     // Hook: scaling.intro/result (single-process -> Redis-coordinated,
@@ -226,62 +282,6 @@ export const projects: ProjectSummary[] = [
     github: studyHubLinks.github,
     liveDemo: studyHubLinks.liveDemo,
     ciBadges: studyHubLinks.ciBadges,
-  },
-  {
-    slug: "agent-broker",
-    index: "03",
-    featured: true,
-    eyebrow: "CASE STUDY 03",
-    title: "Agent Broker",
-    engineeringSubtitle: "Cross-Process Budget, Depth & Retry Coordination",
-    // Hook: agentBrokerContent.stories (admission / reconciliation / identity)
-    // + tests.intro (real forked processes racing one Redis).
-    tagline:
-      "How I made a shared budget, a delegation-depth limit and a circuit breaker hold across independent Node.js processes: one atomic Redis Lua script per decision, checked by racing real forked processes.",
-    // agentBrokerContent.hero.subhead, shortened.
-    summary:
-      "A TypeScript library that lets multi-agent systems ask one shared coordinator whether a call is allowed before making it. Redis is the only shared dependency; the broker never touches the call itself.",
-    image: agentBrokerImage,
-    imageAlt:
-      "Architecture diagram: several application processes each embed the agent-broker library, and all of them coordinate through one shared Redis using atomic Lua scripts, while each calls the downstream target directly",
-    stack: ["TypeScript", "Node.js", "Redis", "Lua", "ioredis"],
-    highlights: [
-      {
-        text: "Admission is one Lua script: agent, circuit, budget and concurrency are checked and reserved together, so racing processes cannot both spend the same budget.",
-        source: "stories.items[0]",
-      },
-      {
-        text: "One reconciliation script serves both reportOutcome and the abandoned-reservation sweep, so a reservation is refunded and released exactly once.",
-        source: "stories.items[1]",
-      },
-      {
-        text: "Depth, root and budget lineage are derived from stored state inside the delegation script; callers cannot assert them.",
-        source: "stories.items[2]",
-      },
-    ],
-    stats: [
-      {
-        value: "188",
-        label: "passing tests across 27 files, run against a real Redis 7",
-        source: "stats[0]",
-      },
-      {
-        value: "3",
-        label: "failure-mode suites that drive real forked OS processes",
-        source: "stats[2]",
-      },
-      {
-        value: "4",
-        label: "Lua scripts, each a single atomic Redis operation",
-        source: "stats[1]",
-      },
-    ],
-    // agentBrokerContent.hero.statusNote, shortened.
-    status: "Published on npm as agent-broker, currently at v0.1.1.",
-    github: agentBrokerLinks.github,
-    liveDemo: agentBrokerLinks.npm,
-    ciBadge: agentBrokerLinks.ciBadge,
-    ciWorkflow: agentBrokerLinks.ciWorkflow,
   },
   {
     slug: "foundersales",

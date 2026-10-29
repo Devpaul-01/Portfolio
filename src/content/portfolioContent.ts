@@ -36,7 +36,7 @@ export const about = {
   eyebrow: "ABOUT",
   paragraphs: [
     "I am a backend software engineer specializing in Node.js, TypeScript, and Python. I focus on designing and deploying fault-tolerant backend infrastructures where relational data correctness under heavy concurrency matters far more than simple CRUD functionality.",
-    "I build software designed around real-world distributed system failure modes. Kith, the project featured below, grew from a manual, error-prone financial tracking challenge within my own extended family into a fully production-ready, multi-tenant ledger architecture. I designed, engineered, and deployed the entire ecosystem independently from the data layer up.",
+    "I build software designed around real-world distributed system failure modes. Agent Broker, the project I would start with, is a published library that keeps a shared budget and circuit breaker correct across independent processes in two languages. Kith, below it, grew from a manual, error-prone financial tracking challenge within my own extended family into a fully production-ready, multi-tenant ledger architecture. I designed, engineered, and deployed the entire ecosystem independently from the data layer up.",
     "Operating globally as an autonomous independent contractor, I am looking to integrate into distributed product teams handling complex data integrity, multi-provider API orchestration, and background processing systems. I offer plug-and-play legal flexibility via contractor frameworks with zero operational overhead for your company.",
   ],
 };
@@ -54,6 +54,7 @@ export const skills = {
       role: "Backend",
       items: [
         "Node.js",
+        "Python",
         "Express",
         "Flask",
         "REST API Design",
@@ -65,6 +66,7 @@ export const skills = {
       role: "Data & Async",
       items: [
         "PostgreSQL",
+        "Redis Lua Scripting (atomic multi-key ops)",
         "Redis Distributed Locking",
         "BullMQ Cluster Scheduling",
         "SQLAlchemy / Alembic",
@@ -77,7 +79,7 @@ export const skills = {
     },
     {
       role: "Testing",
-      items: ["Jest", "Pytest", "Multi-Actor Integration Testing", "Concurrent Race-Condition Simulation"],
+      items: ["Jest", "Vitest", "Pytest", "Cross-Process / Cross-Language Testing", "Multi-Actor Integration Testing", "Concurrent Race-Condition Simulation"],
     },
     {
       role: "Infrastructure & Services",
@@ -102,7 +104,7 @@ export const portfolioHero = {
   handleNote: "GitHub: DevPaul",
   headline: "Backend software engineer building resilient, high-concurrency infrastructure.",
   subhead:
-    "I design and deploy backend systems\u2014focusing on database transactional atomicity, distributed safety, async task processing, and robust isolation filters. Below is Kith, the project I want you to inspect first.",
+    "I design and deploy backend systems\u2014focusing on database transactional atomicity, distributed safety, async task processing, and robust isolation filters. Below is Agent Broker, the project I want you to inspect first: a Redis-backed admission gate published on npm, in TypeScript and Python.",
 };
 
 // -- closing / contact section -------------------------------------------

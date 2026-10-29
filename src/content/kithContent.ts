@@ -426,7 +426,7 @@ export const numbers = {
   stats: [
     { value: "9", label: "background job queues, each with a dedicated worker" },
     { value: "7", label: "cron-scheduled jobs, registered directly onto their queues" },
-    { value: "21", label: "documented architecture decision records" },
+    { value: "20", label: "documented architecture decision records" },
     { value: "15", label: "REST resource groups in the versioned API" },
     { value: "18", label: "notification templates across in-app, push, and email" },
     { value: "~14x", label: "p50 speedup from the Redis membership cache, measured across 4 runs" },

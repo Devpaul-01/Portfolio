@@ -40,15 +40,18 @@ export default function AgentBrokerHero() {
           >
             Architecture doc
           </a>
-          <a
-            href={links.ciWorkflow}
-            target="_blank"
-            rel="noreferrer"
-            className="ml-1 inline-block"
-            aria-label="View live CI build status"
-          >
-            <img src={links.ciBadge} alt="CI build status" className="h-6" />
-          </a>
+          {links.ciBadges.map((ci) => (
+            <a
+              key={ci.label}
+              href={ci.workflow}
+              target="_blank"
+              rel="noreferrer"
+              className="ml-1 inline-block"
+              aria-label={`View live ${ci.label} build status`}
+            >
+              <img src={ci.badge} alt={`${ci.label} build status`} className="h-6" />
+            </a>
+          ))}
         </div>
 
         <div className="mt-10 grid items-start gap-6 lg:grid-cols-2">

@@ -20,25 +20,25 @@ export const homeSectionIds: SectionEntry[] = [
 ];
 
 export const kithSectionIds: SectionEntry[] = [
-  { id: "hero", label: "§01 KITH" },
-  { id: "problem", label: "§01 THE PROBLEM" },
-  { id: "model", label: "§01 THE MODEL" },
-  { id: "dashboard", label: "§01 PRODUCT" },
-  { id: "proxy", label: "§01 PROXY MEMBERSHIP" },
-  { id: "ledger", label: "§01 THE LEDGER" },
-  { id: "tasks", label: "§01 TASKS" },
-  { id: "disputes", label: "§01 DISPUTES" },
-  { id: "pools", label: "§01 RECURRING POOLS" },
-  { id: "judgment", label: "§01 ENGINEERING JUDGMENT" },
-  { id: "measured", label: "§01 MEASURED, NOT CLAIMED" },
-  { id: "reflections", label: "§01 REFLECTIONS" },
-  { id: "reliability", label: "§01 RELIABILITY" },
-  { id: "security", label: "§01 SECURITY" },
-  { id: "architecture", label: "§01 ARCHITECTURE" },
-  { id: "stack", label: "§01 STACK" },
-  { id: "numbers", label: "§01 NUMBERS" },
-  { id: "next-improvements", label: "§01 WHAT'S NEXT" },
-  { id: "closing", label: "§01 SOURCE" },
+  { id: "hero", label: "§03 KITH" },
+  { id: "problem", label: "§03 THE PROBLEM" },
+  { id: "model", label: "§03 THE MODEL" },
+  { id: "dashboard", label: "§03 PRODUCT" },
+  { id: "proxy", label: "§03 PROXY MEMBERSHIP" },
+  { id: "ledger", label: "§03 THE LEDGER" },
+  { id: "tasks", label: "§03 TASKS" },
+  { id: "disputes", label: "§03 DISPUTES" },
+  { id: "pools", label: "§03 RECURRING POOLS" },
+  { id: "judgment", label: "§03 ENGINEERING JUDGMENT" },
+  { id: "measured", label: "§03 MEASURED, NOT CLAIMED" },
+  { id: "reflections", label: "§03 REFLECTIONS" },
+  { id: "reliability", label: "§03 RELIABILITY" },
+  { id: "security", label: "§03 SECURITY" },
+  { id: "architecture", label: "§03 ARCHITECTURE" },
+  { id: "stack", label: "§03 STACK" },
+  { id: "numbers", label: "§03 NUMBERS" },
+  { id: "next-improvements", label: "§03 WHAT'S NEXT" },
+  { id: "closing", label: "§03 SOURCE" },
 ];
 
 export const studyHubSectionIds: SectionEntry[] = [
@@ -64,14 +64,18 @@ export const studyHubSectionIds: SectionEntry[] = [
 ];
 
 export const agentBrokerSectionIds: SectionEntry[] = [
-  { id: "agentbroker-hero", label: "§03 AGENT BROKER" },
-  { id: "agentbroker-problem", label: "§03 THE PROBLEM" },
-  { id: "agentbroker-architecture", label: "§03 ARCHITECTURE" },
-  { id: "agentbroker-lifecycle", label: "§03 LIFECYCLE" },
-  { id: "agentbroker-stories", label: "§03 ENGINEERING DECISIONS" },
-  { id: "agentbroker-tests", label: "§03 CORRECTNESS" },
-  { id: "agentbroker-limits", label: "§03 HONEST LIMITS" },
-  { id: "agentbroker-closing", label: "§03 SOURCE" },
+  { id: "agentbroker-hero", label: "§01 AGENT BROKER" },
+  { id: "agentbroker-problem", label: "§01 THE PROBLEM" },
+  { id: "agentbroker-atomicity", label: "§01 ATOMICITY" },
+  { id: "agentbroker-architecture", label: "§01 ARCHITECTURE" },
+  { id: "agentbroker-lifecycle", label: "§01 LIFECYCLE" },
+  { id: "agentbroker-mechanisms", label: "§01 MECHANISMS" },
+  { id: "agentbroker-stories", label: "§01 ENGINEERING DECISIONS" },
+  { id: "agentbroker-measured", label: "§01 MEASURED" },
+  { id: "agentbroker-languages", label: "§01 TWO LANGUAGES" },
+  { id: "agentbroker-tests", label: "§01 CORRECTNESS" },
+  { id: "agentbroker-limits", label: "§01 HONEST LIMITS" },
+  { id: "agentbroker-closing", label: "§01 SOURCE" },
 ];
 
 export const founderSalesSectionIds: SectionEntry[] = [

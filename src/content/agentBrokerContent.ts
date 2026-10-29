@@ -16,32 +16,53 @@ const blob = (path: string) => `${REPO}/blob/main/${path}`;
 
 // -- links --------------------------------------------------------------
 
+const ts = (path: string) => blob(`typescript/${path}`);
+
 export const links = {
   github: REPO,
   npm: "https://www.npmjs.com/package/agent-broker",
-  ciBadge: `${REPO}/actions/workflows/ci.yml/badge.svg`,
-  ciWorkflow: `${REPO}/actions/workflows/ci.yml`,
-  architectureDoc: blob("docs/agent-broker-architecture.md"),
-  positioningDoc: blob("docs/positioning.md"),
+  // The repo is a monorepo (typescript/, python/, test/cross-language/), so there is no
+  // single ci.yml any more: one workflow per language plus one for the cross-language suite.
+  ciBadge: `${REPO}/actions/workflows/typescript.yml/badge.svg`,
+  ciWorkflow: `${REPO}/actions/workflows/typescript.yml`,
+  ciBadges: [
+    { label: "TypeScript", badge: `${REPO}/actions/workflows/typescript.yml/badge.svg`, workflow: `${REPO}/actions/workflows/typescript.yml` },
+    { label: "Python", badge: `${REPO}/actions/workflows/python.yml/badge.svg`, workflow: `${REPO}/actions/workflows/python.yml` },
+    { label: "Cross-language", badge: `${REPO}/actions/workflows/cross-language.yml/badge.svg`, workflow: `${REPO}/actions/workflows/cross-language.yml` },
+  ],
+  pythonCiBadge: `${REPO}/actions/workflows/python.yml/badge.svg`,
+  pythonCiWorkflow: `${REPO}/actions/workflows/python.yml`,
+  crossLanguageCiBadge: `${REPO}/actions/workflows/cross-language.yml/badge.svg`,
+  crossLanguageCiWorkflow: `${REPO}/actions/workflows/cross-language.yml`,
+  architectureDoc: blob("docs/ARCHITECTURE.md"),
+  positioningDoc: `${REPO}#project-status-and-roadmap`,
   adrIndex: `${REPO}/tree/main/docs/adr`,
-  requestPermission: blob("src/admission/request-permission.ts"),
-  resolveReservation: blob("src/admission/resolve-reservation.ts"),
-  cleanup: blob("src/admission/cleanup.ts"),
-  registerChild: blob("src/agents/register-child.ts"),
-  register: blob("src/agents/register.ts"),
-  keys: blob("src/redis/keys.ts"),
-  harness: blob("test/helpers/harness.ts"),
-  budgetContentionTest: blob("test/integration/failure-modes/budget-contention.test.ts"),
-  depthSpoofingTest: blob("test/integration/failure-modes/depth-spoofing.test.ts"),
-  correlatedRetriesTest: blob("test/integration/failure-modes/correlated-retries.test.ts"),
-  cleanupTest: blob("test/integration/cleanup.test.ts"),
-  reportOutcomeTest: blob("test/integration/report-outcome.test.ts"),
+  requestPermission: ts("src/admission/request-permission.ts"),
+  resolveReservation: ts("src/admission/resolve-reservation.ts"),
+  cleanup: ts("src/admission/cleanup.ts"),
+  registerChild: ts("src/agents/register-child.ts"),
+  register: ts("src/agents/register.ts"),
+  keys: ts("src/redis/keys.ts"),
+  harness: ts("test/helpers/harness.ts"),
+  raceDemo: ts("examples/race-demo.ts"),
+  budgetContentionTest: ts("test/integration/failure-modes/budget-contention.test.ts"),
+  depthSpoofingTest: ts("test/integration/failure-modes/depth-spoofing.test.ts"),
+  correlatedRetriesTest: ts("test/integration/failure-modes/correlated-retries.test.ts"),
+  cleanupTest: ts("test/integration/cleanup.test.ts"),
+  reportOutcomeTest: ts("test/integration/report-outcome.test.ts"),
   adr0006: blob("docs/adr/0006-no-owned-redis-connection.md"),
   adr0008: blob("docs/adr/0008-length-prefixed-key-segments.md"),
   adr0010: blob("docs/adr/0010-single-probe-circuit-recovery.md"),
   adr0016: blob("docs/adr/0016-no-cross-instance-sharing-mechanism.md"),
   adr0023: blob("docs/adr/0023-single-combined-admission-script.md"),
-  ciYml: blob(".github/workflows/ci.yml"),
+  ciYml: blob(".github/workflows/typescript.yml"),
+  crossLanguageDir: `${REPO}/tree/main/test/cross-language`,
+  scriptEquivalenceTest: blob("python/tests/unit/test_script_equivalence.py"),
+  pythonReadme: blob("python/README.md"),
+  measurementSummary: ts("measurement/RESULTS_SUMMARY.md"),
+  m3Report: ts("measurement/reports/M3-admission-latency.md"),
+  m4Report: ts("measurement/reports/M4-concurrency-exhaustion.md"),
+  m5Report: ts("measurement/reports/M5-crash-recovery.md"),
 };
 
 // -- hero -----------------------------------------------------------------
@@ -50,12 +71,12 @@ export const hero = {
   eyebrow: "ENGINEERING CASE STUDY",
   headline: "One shared answer to: is this agent call allowed right now?",
   subhead:
-    "agent-broker is a TypeScript library that uses Redis to coordinate budget, delegation depth, concurrency and circuit-breaker state across independent Node.js processes — and checks that coordination by racing real forked processes against one Redis, not by mocking it.",
+    "agent-broker is a Redis-backed admission gate that coordinates budget, delegation depth, concurrency and circuit-breaker state across independent processes. It ships in TypeScript and Python, both running the same Lua scripts against the same Redis, and it is tested by racing real OS processes against one Redis, not by mocking it.",
   // Published to npm as `agent-broker`, version 0.1.1 (package.json on main).
   statusNote:
     "Published on npm as agent-broker, currently at v0.1.1. Install it directly:",
   buildCommand: "npm install agent-broker ioredis",
-  statusFootnote: "Requires Node.js 22+ and a reachable Redis. ioredis is a peer dependency.",
+  statusFootnote: "TypeScript: Node.js 22+, ioredis as a peer dependency. A Python port (3.10+, redis-py) lives in the same repository and is not yet on PyPI. Both need a reachable Redis.",
   apiHeading: "The whole API shape, from the README quick start",
   apiSnippet: `const broker = createBroker({ redis });
 
@@ -91,13 +112,13 @@ export const stats = [
   { value: "3", label: "failure-mode suites that drive real forked OS processes" },
   { value: "26", label: "ADRs recording decisions and rejected alternatives" },
   { value: "0", label: "runtime dependencies (ioredis is a peer you provide)" },
-  { value: "2", label: "ioredis majors (^5, ^6) smoke-tested from the packed tarball in CI" },
+  { value: "2", label: "languages (TypeScript, Python) coordinating through one Redis, tested together in CI" },
 ];
 
 // -- problem ----------------------------------------------------------------
 
 export const problem = {
-  eyebrow: "§03 · THE PROBLEM",
+  eyebrow: "§01 · THE PROBLEM",
   heading: "Three failures that no single process can fix",
   intro:
     "Each one looks fine from inside any one process. They only appear in aggregate — which is exactly the situation a multi-agent system creates by default, so the fix has to live somewhere every process can see.",
@@ -122,7 +143,7 @@ export const problem = {
 // -- architecture ------------------------------------------------------------
 
 export const architecture = {
-  eyebrow: "§03 · ARCHITECTURE",
+  eyebrow: "§01 · ARCHITECTURE",
   heading: "A library per process, one Redis in the middle",
   body: [
     "There is no broker service to deploy. Each process imports the library and points it at the same Redis; anything that can see the same keys is, by construction, already coordinating. Sharing is explicit: processes that pass the same budgetKey draw from one pool.",
@@ -137,7 +158,7 @@ export const architecture = {
 // -- lifecycle ----------------------------------------------------------------
 
 export const lifecycle = {
-  eyebrow: "§03 · REQUEST LIFECYCLE",
+  eyebrow: "§01 · REQUEST LIFECYCLE",
   heading: "Two atomic steps around a call the broker never sees",
   body: "requestPermission reserves, the caller does its own work, reportOutcome reconciles. Both ends are single Lua scripts, which Redis executes as one uninterrupted unit. If the caller crashes before reporting, a TTL'd reservation and a lazy sweep put the budget and the concurrency slot back.",
   diagram: diagramLifecycle,
@@ -164,7 +185,7 @@ export interface Story {
 }
 
 export const stories = {
-  eyebrow: "§03 · THREE ENGINEERING DECISIONS",
+  eyebrow: "§01 · THREE ENGINEERING DECISIONS",
   heading: "Where the hard parts actually are",
   intro:
     "Each decision below is a place where the obvious implementation is wrong only under concurrency or failure — the kind of bug a single-process test never finds.",
@@ -249,7 +270,7 @@ export const stories = {
 // -- tests ----------------------------------------------------------------------
 
 export const tests = {
-  eyebrow: "§03 · CORRECTNESS",
+  eyebrow: "§01 · CORRECTNESS",
   heading: "How the claims are checked",
   intro:
     "Concurrency bugs hide from single-process tests. The failure-mode suites fork real Node processes through an IPC harness and race them against one Redis, asserting the exact counts and balances an atomic implementation must produce.",
@@ -286,7 +307,7 @@ export const tests = {
 // -- limits ---------------------------------------------------------------------
 
 export const limits = {
-  eyebrow: "§03 · HONEST LIMITS",
+  eyebrow: "§01 · HONEST LIMITS",
   heading: "What it does not do",
   intro:
     "The README states its trust model plainly instead of overselling it. These are the boundaries worth knowing before relying on it.",
@@ -305,7 +326,7 @@ export const limits = {
     },
     {
       title: "Early surface area",
-      body: "No framework-protocol adapters (MCP or similar) and no built-in observability beyond four hooks yet. docs/positioning.md lays out the plan and why it is a layer on top rather than a rewrite.",
+      body: "No framework-protocol adapters (MCP or similar) and no built-in observability beyond four hooks yet. A LangGraph-native integration is in development and not released; the README roadmap lays out the plan.",
     },
   ],
 };
@@ -313,7 +334,7 @@ export const limits = {
 // -- closing --------------------------------------------------------------------
 
 export const closing = {
-  eyebrow: "§03 · SOURCE",
+  eyebrow: "§01 · SOURCE",
   heading: "Read the code, not just the description",
   body: "Start with the architecture doc, then the three Lua scripts. The tests are written to be read as documentation of the invariants.",
   readingList: [
@@ -322,5 +343,123 @@ export const closing = {
     { label: "register-child.ts", href: links.registerChild },
     { label: "budget-contention.test.ts", href: links.budgetContentionTest },
     { label: "ADR index", href: links.adrIndex },
+  ],
+};
+
+// -- atomicity ---------------------------------------------------------------
+
+export const atomicity = {
+  eyebrow: "§01 · ATOMICITY",
+  heading: "Why check-then-spend has to be one step",
+  body:
+    "The obvious design reads the budget, decides, then writes the new balance. Two processes can both read 300 before either writes, and both spend it. Admission here is a single Lua script: agent, circuit, budget and concurrency are checked and reserved inside one Redis command, so there is no gap between the check and the spend for another process to slip into.",
+  diagramTitle: "Admission as one atomic script",
+  diagramDesc:
+    "A request enters one Lua script that checks the agent, then the circuit, then budget, then concurrency, and reserves budget and a concurrency slot only if every check passes.",
+  caption: "Checks run in a fixed order inside one script. If any fails, nothing is reserved.",
+  demoHeading: "Race it",
+  demoNote:
+    "A browser simulation of the same shape as the real test: the budget covers three calls. In naive mode, read and write are separate steps and processes interleave. In atomic mode each decision is indivisible. The real version forks OS processes against Redis (see the test and demo below).",
+};
+
+// -- mechanisms --------------------------------------------------------------
+
+export const mechanisms = {
+  eyebrow: "§01 · MECHANISMS",
+  heading: "Three mechanisms that keep the books straight",
+  resolutionBody:
+    "Every admitted call holds a reservation: budget taken up front and a concurrency slot. reportOutcome settles it by refunding the difference between estimate and actual cost and releasing the slot. If the caller crashes and never reports, a lazy sweep on a later call (from any process) finds expired reservations, refunds them, and releases the slot. A late report after the sweep is refused, so nothing is refunded twice.",
+  resolutionTitle: "Reservation resolution",
+  resolutionDesc:
+    "A reservation is resolved exactly once, either by the caller's report or by the expiry sweep, and whichever arrives second is refused.",
+  resolutionCaption: "Two paths to resolve a reservation; the second to arrive is a no-op.",
+  circuitBody:
+    "The circuit breaker keeps a failure window per target. Past a threshold the circuit opens and most calls are denied before they reserve anything. A small fraction are admitted as probes, and one successful probe closes it. The original design had a third 'recovering' state needing several successes; I dropped it and recorded why in ADR-0010, because trickle-rate probes make consecutive-success tracking weak evidence for extra state.",
+  circuitTitle: "Circuit breaker",
+  circuitDesc:
+    "Closed admits calls and records failures. Past the threshold it opens and denies most calls, admitting occasional probes. One successful probe closes it again.",
+  circuitCaption: "Two states in Redis. ADR-0010 explains why there is no 'recovering' state.",
+  keysHeading: "What lives in Redis",
+  keysIntro: "Every key is built in one file, keys.ts, and nowhere else.",
+  keys: [
+    { key: "agent:{id}", type: "hash", holds: "Agent record: budget key, depth, last heartbeat" },
+    { key: "budget:{len}:{budgetKey}", type: "string", holds: "Shared balance for everyone on that budget key" },
+    { key: "reservation:{id}", type: "hash", holds: "One in-flight call: cost, target, probe flag" },
+    { key: "reservations:expiring", type: "sorted set", holds: "Reservations ordered by expiry, scanned by the sweep" },
+    { key: "concurrency:{target}{budget}", type: "string", holds: "In-flight counter per target and budget" },
+    { key: "circuit:{target}", type: "sorted set", holds: "Recent failures inside the window" },
+    { key: "circuit:{target}:state", type: "string", holds: "open, or absent (closed)" },
+  ],
+  collision: {
+    heading: "Why keys are length-prefixed",
+    a: { pair: 'target "a:b", budget "c"', naive: "concurrency:a:b:c", prefixed: "concurrency:3:a:b1:c" },
+    b: { pair: 'target "a", budget "b:c"', naive: "concurrency:a:b:c", prefixed: "concurrency:1:a3:b:c" },
+  },
+};
+
+// -- measured ----------------------------------------------------------------
+
+// Source: typescript/measurement/reports/M3-admission-latency.md (local Redis 7.0.15,
+// single core, N=1000 per run, 50-call warm-up; runs 1-3 plus follow-up runs 4 and 5).
+export const measured = {
+  eyebrow: "§01 · MEASURED",
+  heading: "Measured, with the limits stated",
+  intro:
+    "One requestPermission plus reportOutcome pair, which fuses the budget, concurrency and circuit checks into one Redis round trip, timed over 1,000 sequential calls per run on a local Redis.",
+  latencyHeading: "Admission latency (ms)",
+  runs: [
+    { label: "Run 1", median: 0.25, p99: 4.08 },
+    { label: "Run 2", median: 0.22, p99: 4.31 },
+    { label: "Run 3", median: 0.23, p99: 3.93 },
+    { label: "Run 4 (later session)", median: 0.3, p99: 5.22 },
+    { label: "Run 5 (after restructure)", median: 0.27, p99: 5.16 },
+  ],
+  baseline: {
+    label: "3 plain GETs (not atomic)",
+    median: 0.04,
+    p99: 0.18,
+    note:
+      "The reference bar is three separate GETs with no writes and no atomicity, there only to show that round trips, not script size, dominate cost. The atomic script does about ten commands, including writes, and stays well under a millisecond at the median.",
+  },
+  extra: [
+    {
+      value: "3 of 30",
+      title: "Budget race",
+      body: "Thirty processes, budget for three calls: exactly three admitted, in every run of the integration test.",
+    },
+    {
+      value: "20 procs",
+      title: "Concurrency limit",
+      body: "Under 20-process contention the limit admits exactly as many as it allows, not one more. Three independent runs, zero failures.",
+    },
+  ],
+  caveat:
+    "These are localhost, single-client, sequential numbers: a best case, not a production figure. They say nothing about latency under concurrent load or over a real network to a managed Redis, and no before/after improvement is claimed because no earlier version was benchmarked. Occasional 15-20 ms maxima appear in every run and are reported, not trimmed.",
+};
+
+// -- two languages -----------------------------------------------------------
+
+export const languages = {
+  eyebrow: "§01 · TWO LANGUAGES",
+  heading: "One protocol, two implementations, one Redis",
+  body:
+    "The Python port is not a re-imagining. It runs the same Lua scripts against the same keys, so a TypeScript process and a Python process can draw from one budget pool and one circuit breaker. That claim is tested, not asserted: real workers in each language run against one Redis and read each other's results.",
+  diagramTitle: "TypeScript and Python sharing one Redis",
+  diagramDesc:
+    "A TypeScript broker and a Python broker both send the same Lua scripts to one Redis. A test fails if the two copies of the scripts differ.",
+  caption: "Same scripts, same keys, same state.",
+  points: [
+    {
+      title: "Cooperation tests",
+      body: "A TypeScript worker registers an agent and a Python worker is admitted against that budget, and the reverse. Workers speak JSON lines over stdin/stdout, so neither language needs the other's runtime.",
+    },
+    {
+      title: "Shared behavior cases",
+      body: "One language-neutral file of operation sequences with expected results and final Redis state runs through both implementations, so behavior cannot quietly diverge.",
+    },
+    {
+      title: "Script equivalence",
+      body: "A Python unit test compares the Lua scripts used by the two implementations and fails if they drift apart, so the shared-script claim is enforced by CI.",
+    },
   ],
 };
