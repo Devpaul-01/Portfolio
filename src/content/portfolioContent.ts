@@ -59,7 +59,8 @@ export const skills = {
         "Flask",
         "REST API Design",
         "WebSockets",
-        "JWT / OAuth Integration"
+        "JWT / OAuth Integration",
+        "Zod Schema Validation",
       ],
     },
     {
@@ -75,11 +76,20 @@ export const skills = {
     },
     {
       role: "Frontend",
-      items: ["React", "TypeScript", "React Native / Expo", "Tailwind CSS", "Vite"],
+      items: [
+        "React",
+        "TypeScript",
+        "React Native / Expo",
+        "Tailwind CSS",
+        "Vite",
+        "TanStack Query",
+        "React Hook Form",
+        "Zustand",
+      ],
     },
     {
       role: "Testing",
-      items: ["Jest", "Vitest", "Pytest", "Cross-Process / Cross-Language Testing", "Multi-Actor Integration Testing", "Concurrent Race-Condition Simulation"],
+      items: ["Jest", "Vitest", "Playwright", "Pytest", "Cross-Process / Cross-Language Testing", "Multi-Actor Integration Testing", "Concurrent Race-Condition Simulation"],
     },
     {
       role: "Infrastructure & Services",
@@ -91,6 +101,8 @@ export const skills = {
         "Railway",
         "Vercel",
         "AWS Components",
+        "Firebase Cloud Messaging",
+        "Transactional Email (Resend)",
       ],
     },
   ],
