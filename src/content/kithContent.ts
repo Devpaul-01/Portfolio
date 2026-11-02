@@ -351,7 +351,7 @@ export const reliability = {
   heading: "Slow work stays off the request path \u2014 and failures leave a trace.",
   body: "Nine Redis-backed BullMQ queues, each with a dedicated worker and its own concurrency tuning, move notifications, cycle generation, reminders, and exports out of the HTTP request/response cycle. A separate scheduler registers seven cron-based jobs directly onto the queues their workers already listen on \u2014 by construction, not convention.",
   testingNote:
-    "Three Jest projects exist (unit, integration, rate-limiting), each exercising the real service layer rather than mocks. Only the unit and frontend suites currently run in CI on every push \u2014 integration and rate-limit jobs are disabled in the workflow (flaky environment setup around PostgREST schema-cache timing), a known gap tracked openly rather than implied away. The integration suite still goes further than a bare-Postgres test would: it stands up PostgREST in front of test Postgres specifically because the app talks to Supabase through a PostgREST-compatible client in production.",
+    "Three Jest projects (unit, integration, rate-limiting) plus a Playwright E2E suite all run in CI on every push, alongside the frontend tests \u2014 five jobs, one green check. The integration suite stands up PostgREST in front of test Postgres specifically because the app talks to Supabase through a PostgREST-compatible client in production, rather than testing against bare Postgres. The E2E suite goes a step further still: a local Supabase-compatible stack (Postgres + PostgREST + GoTrue auth, via @supabase/lite) drives real signup and login through the actual UI \u2014 no mocked auth, no seeded JWT.",
   beats: [
     {
       image: bullBoard,
@@ -415,7 +415,7 @@ export const stack = {
     { role: "Storage", items: ["Supabase Storage", "signed URLs"] },
     { role: "Notifications", items: ["Firebase Cloud Messaging", "Resend"] },
     { role: "Frontend", items: ["React 18", "Vite", "TypeScript"] },
-    { role: "Ops", items: ["Sentry", "Bull Board", "Winston", "Jest + GitHub Actions"] },
+    { role: "Ops", items: ["Sentry", "Bull Board", "Winston", "Jest + Playwright + GitHub Actions"] },
   ],
 };
 
