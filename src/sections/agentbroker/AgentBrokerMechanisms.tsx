@@ -14,6 +14,21 @@ export default function AgentBrokerMechanisms() {
         <p className="mt-14 max-w-2xl text-sm leading-relaxed text-slate sm:text-base">{m.circuitBody}</p>
         <CircuitDiagram className="mt-8" title={m.circuitTitle} desc={m.circuitDesc} caption={m.circuitCaption} />
 
+        <div className="mt-14 border-l-2 border-ledger-line pl-5 sm:pl-6">
+          <p className="eyebrow mb-2">{m.queueTitle}</p>
+          <p className="max-w-2xl text-sm leading-relaxed text-slate sm:text-base">{m.queueBody}</p>
+          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-slate-soft">{m.queueDesc}</p>
+          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-soft">{m.queueCaption}</p>
+          <a
+            href={links.queue}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-block font-mono text-xs tracking-wide text-confirmed transition-opacity hover:opacity-70"
+          >
+            queue.ts · queue-mode.test.ts &rarr;
+          </a>
+        </div>
+
         <h3 className="mt-14 font-display text-xl font-medium text-ink">{m.keysHeading}</h3>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate">{m.keysIntro}</p>
         <div className="diagram-scroll mt-6 overflow-x-auto border border-ledger-line">

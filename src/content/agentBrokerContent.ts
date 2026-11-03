@@ -50,6 +50,10 @@ export const links = {
   correlatedRetriesTest: ts("test/integration/failure-modes/correlated-retries.test.ts"),
   cleanupTest: ts("test/integration/cleanup.test.ts"),
   reportOutcomeTest: ts("test/integration/report-outcome.test.ts"),
+  queue: ts("src/admission/queue.ts"),
+  queueModeTest: ts("test/integration/queue-mode.test.ts"),
+  queueModeAbortTest: ts("test/integration/queue-mode-abort.test.ts"),
+  queueModeContentionTest: ts("test/integration/queue-mode-contention.test.ts"),
   adr0006: blob("docs/adr/0006-no-owned-redis-connection.md"),
   adr0008: blob("docs/adr/0008-length-prefixed-key-segments.md"),
   adr0010: blob("docs/adr/0010-single-probe-circuit-recovery.md"),
@@ -366,7 +370,7 @@ export const atomicity = {
 
 export const mechanisms = {
   eyebrow: "§01 · MECHANISMS",
-  heading: "Three mechanisms that keep the books straight",
+  heading: "Four mechanisms that keep the books straight",
   resolutionBody:
     "Every admitted call holds a reservation: budget taken up front and a concurrency slot. reportOutcome settles it by refunding the difference between estimate and actual cost and releasing the slot. If the caller crashes and never reports, a lazy sweep on a later call (from any process) finds expired reservations, refunds them, and releases the slot. A late report after the sweep is refused, so nothing is refunded twice.",
   resolutionTitle: "Reservation resolution",
@@ -379,6 +383,12 @@ export const mechanisms = {
   circuitDesc:
     "Closed admits calls and records failures. Past the threshold it opens and denies most calls, admitting occasional probes. One successful probe closes it again.",
   circuitCaption: "Two states in Redis. ADR-0010 explains why there is no 'recovering' state.",
+  queueBody:
+    "Denial is the default: a call that can't be admitted gets a reason and the caller decides what to do. requestPermission also takes an optional queue mode for callers who would rather wait than handle the denial themselves — it polls the same atomic admission path with exponential backoff and jitter until it is admitted, queueTimeout elapses (reason: 'queue_timeout'), or an AbortSignal fires (reason: 'aborted'). A denial reason that waiting can never fix, like unknown_agent, still returns immediately instead of polling pointlessly.",
+  queueTitle: "Queue mode",
+  queueDesc:
+    "An optional second path through the same admission script: on denial, poll with backoff instead of returning. Admitted, timed out, or aborted are the only ways out.",
+  queueCaption: "Non-queueable denial reasons (unknown_agent) still return immediately — waiting can't fix them.",
   keysHeading: "What lives in Redis",
   keysIntro: "Every key is built in one file, keys.ts, and nowhere else.",
   keys: [
