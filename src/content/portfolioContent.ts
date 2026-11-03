@@ -89,13 +89,26 @@ export const skills = {
     },
     {
       role: "Testing",
-      items: ["Jest", "Vitest", "Playwright", "Pytest", "Cross-Process / Cross-Language Testing", "Multi-Actor Integration Testing", "Concurrent Race-Condition Simulation"],
+      items: [
+        "Jest",
+        "Vitest",
+        "Playwright",
+        "Pytest",
+        "Cross-Process / Cross-Language Testing",
+        "Multi-Actor Integration Testing",
+        "Concurrent Race-Condition Simulation",
+        "mypy (strict mode)",
+        "Latency Benchmarking & Measurement Harnesses",
+      ],
     },
     {
       role: "Infrastructure & Services",
       items: [
         "Docker",
         "GitHub Actions CI/CD",
+        "Path-Filtered Monorepo CI Pipelines",
+        "npm Package Publishing",
+        "PyPI Publishing (Trusted Publisher / OIDC)",
         "Sentry Error Telemetry",
         "Supabase",
         "Railway",
