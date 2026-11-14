@@ -21,11 +21,13 @@ import { links as kithLinks } from "./kithContent";
 import { links as studyHubLinks, hero as studyHubHero } from "./studyHubContent";
 import { links as agentBrokerLinks } from "./agentBrokerContent";
 import { links as founderSalesLinks } from "./foundersalesContent";
+import { links as llmGatewayLinks } from "./llmGatewayContent";
 
 import kithHeroImage from "../assets/dashboard-full-overview.png";
 import studyHubHeroImage from "../assets/system-architecture.png";
 import agentBrokerImage from "../assets/agent-broker-architecture.svg";
 import founderSalesHeroImage from "../assets/home-dashboard.png";
+import llmGatewayHeroImage from "../assets/llmgw-dashboard.png";
 
 export interface ProjectHighlight {
   text: string;
@@ -40,7 +42,7 @@ export interface ProjectStat {
 }
 
 export interface ProjectSummary {
-  slug: "kith" | "studyhub" | "agent-broker" | "foundersales";
+  slug: "kith" | "studyhub" | "agent-broker" | "foundersales" | "llm-gateway";
   index: string; // "01"
   featured: boolean;
   eyebrow: string;
@@ -77,7 +79,7 @@ export interface ProjectSummary {
 
 export const projectsSection = {
   eyebrow: "§00 PROJECTS",
-  heading: "Four projects, built solo. Each one a different kind of hard.",
+  heading: "Five projects, built solo. Each one a different kind of hard.",
   intro:
     "Each case study goes into the architecture, the decisions behind it, and the parts that are honestly not finished.",
 };
@@ -355,5 +357,63 @@ export const projects: ProjectSummary[] = [
     // live deployment yet.
     ciBadge: founderSalesLinks.ciBadge,
     ciWorkflow: founderSalesLinks.ciWorkflow,
+  },
+  {
+    slug: "llm-gateway",
+    index: "05",
+    featured: true,
+    eyebrow: "CASE STUDY 05",
+    title: "LLM Gateway",
+    engineeringSubtitle: "Atomic Admission Control & Stream-Safe Failover",
+    // Hook: llmGatewayContent.stories (admission / cache / streams).
+    tagline:
+      "How I built a self-hosted gateway where rate, concurrency and token-budget limits are single atomic Redis Lua scripts, the cache refuses to store a failed-over answer, and a provider outage is routed around instead of passed on to the caller.",
+    // llmGatewayContent.hero.subhead, shortened.
+    summary:
+      "An OpenAI-compatible Go reverse proxy between an application and twelve LLM providers. Change one base_url and gain failover across models, providers and keys, a correctness-first response cache, and per-project cost controls, with a React console to watch it work.",
+    image: llmGatewayHeroImage,
+    imageAlt:
+      "The LLM Gateway console dashboard showing requests, success rate, requests rescued by failover, requests blocked before a provider, request volume, latency percentiles and cache hit rate",
+    // llmGatewayContent: Go (go.mod), Postgres/Redis (ARCHITECTURE.md), web/.
+    stack: ["Go", "PostgreSQL", "Redis", "Lua", "React", "TypeScript", "Docker"],
+    highlights: [
+      {
+        text: "Atomic admission: rate limit, concurrency slot and token budget are each one Redis Lua script, checked before any provider is contacted. The budget reserves up front and settles to actual usage.",
+        source: "stories.items[0]",
+      },
+      {
+        text: "Correctness-first cache: only temperature-0, single-attempt, single-model answers are stored, with O(1) epoch invalidation, so a degraded failover answer is never replayed.",
+        source: "stories.items[1]",
+      },
+      {
+        text: "Stream-safe failover: failures sort into four categories, a Redis-shared circuit breaker demotes sick providers, and a stream with no clean finish_reason is never served as complete.",
+        source: "stories.items[2]",
+      },
+    ],
+    stats: [
+      {
+        value: "12",
+        label: "built-in providers behind one OpenAI-compatible adapter",
+        source: "stats[0]",
+      },
+      {
+        value: "3",
+        label: "independent admission gates, each an atomic Lua script",
+        source: "stats[1]",
+      },
+      {
+        value: "84",
+        label: "Go test functions, run with -race against real Postgres and Redis",
+        source: "stats[2]",
+      },
+    ],
+    // llmGatewayContent.hero.statusNote, shortened.
+    status: "Open source (MIT) and self-hosted.",
+    statusDetail:
+      "Not run as a hosted service, so there are no production traffic claims. Figures come from tests and a local mock-upstream demo.",
+    github: llmGatewayLinks.github,
+    liveDemo: llmGatewayLinks.liveDemo,
+    ciBadge: llmGatewayLinks.ciBadge,
+    ciWorkflow: llmGatewayLinks.ciWorkflow,
   },
 ];
