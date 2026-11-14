@@ -98,3 +98,18 @@ export const founderSalesSectionIds: SectionEntry[] = [
   { id: "foundersales-numbers", label: "§04 NUMBERS" },
   { id: "foundersales-closing", label: "§04 SOURCE" },
 ];
+
+export const llmGatewaySectionIds: SectionEntry[] = [
+  { id: "llmgateway-hero", label: "§05 LLM GATEWAY" },
+  { id: "llmgateway-problem", label: "§05 THE PROBLEM" },
+  { id: "llmgateway-tour", label: "§05 THE CONSOLE" },
+  { id: "llmgateway-architecture", label: "§05 ARCHITECTURE" },
+  { id: "llmgateway-lifecycle", label: "§05 LIFECYCLE" },
+  { id: "llmgateway-admission", label: "§05 ADMISSION CONTROL" },
+  { id: "llmgateway-failover", label: "§05 FAILOVER" },
+  { id: "llmgateway-stories", label: "§05 ENGINEERING DECISIONS" },
+  { id: "llmgateway-measured", label: "§05 MEASURED" },
+  { id: "llmgateway-tests", label: "§05 CORRECTNESS" },
+  { id: "llmgateway-limits", label: "§05 HONEST LIMITS" },
+  { id: "llmgateway-closing", label: "§05 SOURCE" },
+];
