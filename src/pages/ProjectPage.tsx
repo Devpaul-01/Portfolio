@@ -5,6 +5,7 @@ import KithProject from "../projects/KithProject";
 import StudyHubProject from "../projects/StudyHubProject";
 import AgentBrokerProject from "../projects/AgentBrokerProject";
 import FounderSalesProject from "../projects/FounderSalesProject";
+import LlmGatewayProject from "../projects/LlmGatewayProject";
 import Contact from "../sections/Contact";
 import { contact, identity } from "../content/portfolioContent";
 import { projects } from "../content/projectsIndexContent";
@@ -13,11 +14,12 @@ import {
   studyHubSectionIds,
   agentBrokerSectionIds,
   founderSalesSectionIds,
+  llmGatewaySectionIds,
   type SectionEntry,
 } from "../content/sectionIds";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
-type Slug = "kith" | "studyhub" | "agent-broker" | "foundersales";
+type Slug = "kith" | "studyhub" | "agent-broker" | "foundersales" | "llm-gateway";
 
 // One entry per case study. The Project components are the existing
 // fragments, unchanged; this map is the only place that pairs a route with
@@ -35,6 +37,10 @@ const registry: Record<
   foundersales: {
     Component: FounderSalesProject,
     sectionIds: founderSalesSectionIds,
+  },
+  "llm-gateway": {
+    Component: LlmGatewayProject,
+    sectionIds: llmGatewaySectionIds,
   },
 };
 
