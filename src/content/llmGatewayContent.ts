@@ -28,7 +28,7 @@ const blob = (path: string) => `${REPO}/blob/main/${path}`;
 // The public, token-free /demo page of the deployed Gateway Console. Kept as
 // one constant so it can be swapped for a stable production URL in one place.
 export const LIVE_DEMO =
-  "https://llm-gateway-bx27zp9oo-studyhubplatform.vercel.app/demo";
+  "https://llm-gateway-studyhubplatform.vercel.app/demo";
 
 // -- links --------------------------------------------------------------
 
