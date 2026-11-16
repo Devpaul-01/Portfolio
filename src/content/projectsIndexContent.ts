@@ -355,8 +355,10 @@ export const projects: ProjectSummary[] = [
     github: founderSalesLinks.github,
     // No liveDemo: foundersalesContent.hero.statusNote states there is no
     // live deployment yet.
-    ciBadge: founderSalesLinks.ciBadge,
-    ciWorkflow: founderSalesLinks.ciWorkflow,
+    // No ciBadge/ciWorkflow here for now: the workflow at
+    // foundersalesContent.links.ciWorkflow is currently failing, and showing
+    // a red "failing" badge on the homepage card does this project more harm
+    // than showing nothing. Restore once the workflow is green again.
   },
   {
     slug: "llm-gateway",
