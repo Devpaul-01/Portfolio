@@ -220,7 +220,7 @@ export const tour = {
       "The one credential the console asks for. The admin token is held only for the browser tab and compared in constant time on the server.",
   } as TourImage,
   provenance:
-    "All captures show demo data generated with mock upstreams and seeded rows, to document what the console renders. They are not traffic from a production deployment.",
+    "All captures show demo data from a mock-upstream run, to document what the console renders. The live demo's 'Live' badge reflects whether the metrics endpoint has any recorded requests at all, not whether traffic is current, so a past demo run can still show as 'Live' later. None of this is production traffic.",
   demoNote:
     "The console's public /demo page is the only view that needs no token: it renders the same metrics report from the public endpoint, and falls back to a recorded run of the failover demo, clearly labelled as recorded, if the live endpoint is unreachable.",
 };
