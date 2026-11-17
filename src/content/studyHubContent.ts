@@ -116,11 +116,11 @@ export const productModel = {
   ],
 };
 
-// -- domains overview (StudyHub-specific: the 13-domain table) --------------
+// -- domains overview (StudyHub-specific: the 12-domain table) --------------
 
 export const domains = {
   eyebrow: "\u00a703 \u00b7 THE SURFACE",
-  heading: "Thirteen product domains, a comparatively small number of shared mechanisms.",
+  heading: "Twelve product domains, a comparatively small number of shared mechanisms.",
   intro:
     "The product surface is intentionally broad \u2014 social, content, homework, gamification, AI, real-time \u2014 but it's built on shared mechanisms reused consistently across domains, rather than each feature reinventing its own caching, notification delivery, or failure handling.",
   groups: [
@@ -130,7 +130,7 @@ export const domains = {
     },
     {
       role: "Content & collaboration",
-      items: ["Content Feed", "Threads", "Direct Messages", "Live Study Sessions"],
+      items: ["Content Feed", "Threads", "Direct Messages"],
     },
     {
       role: "Work & reward",
