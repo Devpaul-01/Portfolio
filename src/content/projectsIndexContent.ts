@@ -214,7 +214,7 @@ export const projects: ProjectSummary[] = [
     slug: "studyhub",
     index: "03",
     // Audit change: was `false`. StudyHub's case-study content is the
-    // same caliber and sourcing rigor as Kith's (13 product domains, a
+    // same caliber and sourcing rigor as Kith's (12 product domains, a
     // 6-provider classified AI failover engine, a documented horizontal-
     // scaling refactor, a real CI suite) — the compact/stacked card was
     // underselling it relative to what the case study itself delivers.
@@ -265,12 +265,12 @@ export const projects: ProjectSummary[] = [
     ],
     stats: [
       {
-        value: "55",
+        value: "49",
         label: "SQLAlchemy models across the schema",
         source: "numbers.stats[0]",
       },
       {
-        value: "13",
+        value: "12",
         label: "major product domains",
         source: "numbers.stats[1]",
       },
