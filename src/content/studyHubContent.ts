@@ -429,8 +429,8 @@ export const stack = {
 export const numbers = {
   eyebrow: "\u00a717 \u00b7 BY THE NUMBERS",
   stats: [
-    { value: "55", label: "SQLAlchemy models across the schema" },
-    { value: "13", label: "major product domains" },
+    { value: "49", label: "SQLAlchemy models across the schema" },
+    { value: "12", label: "major product domains" },
     { value: "6", label: "LLM providers behind one failover engine" },
     { value: "5", label: "scheduled jobs, each Redis-lock guarded" },
     { value: "18", label: "gamification badges" },
