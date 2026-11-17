@@ -88,12 +88,12 @@ export const productModel = {
   eyebrow: "\u00a702 \u00b7 THE MODEL",
   heading: "Almost every feature either produces reputation, consumes it, or reinforces the behavior that generates it.",
   intro:
-    "A Domain is one of thirteen product areas \u2014 the feed, threads, homework, gamification, and so on. A Service is the zero-Flask-dependency business logic layer every domain funnels through. Reputation is the currency the whole system is denominated in.",
+    "A Domain is one of twelve product areas \u2014 the feed, threads, homework, gamification, and so on. A Service is the zero-Flask-dependency business logic layer every domain funnels through. Reputation is the currency the whole system is denominated in.",
   nodes: [
     {
       label: "Domains",
       description:
-        "Thirteen product areas \u2014 identity, social graph, feed, threads, homework, live sessions, AI, gamification \u2014 each with a real UI surface.",
+        "Twelve product areas \u2014 identity, social graph, feed, threads, homework, AI, gamification \u2014 each with a real UI surface.",
     },
     {
       label: "Services",
@@ -110,7 +110,6 @@ export const productModel = {
     "Connections",
     "Threads",
     "Homework marketplace",
-    "Live study sessions",
     "Learnora (AI)",
     "Badges & leaderboards",
     "Notifications",
