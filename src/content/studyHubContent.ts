@@ -60,7 +60,7 @@ export const hero = {
   eyebrow: "ENGINEERING CASE STUDY",
   headline: "Peer tutoring, made discoverable.",
   subhead:
-    "StudyHub is a peer-to-peer academic platform built around one idea: reputation earned by helping other students should be the platform's actual currency. A Q&A feed, a connections-based social graph, group chat, a homework help marketplace, live co-study sessions, and a multi-provider AI assistant, all reinforcing the same reputation system. This page is a walk-through of the engineering behind it.",
+    "StudyHub is a peer-to-peer academic platform built around one idea: reputation earned by helping other students should be the platform's actual currency. A Q&A feed with bookmarks, a connections-based social graph, group chat, a homework help marketplace, and a multi-provider AI assistant, all reinforcing the same reputation system. This page is a walk-through of the engineering behind it.",
   statusNote:
     "Actively in development \u2014 core features are working well, and I'm still fixing bugs and implementing new features. The write-up below documents the system as it stands today.",
   image: studyhubSystemArchitecture,
