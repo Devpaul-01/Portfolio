@@ -32,6 +32,10 @@ export const links = {
     "https://github.com/Devpaul-01/StudyHub/blob/main/PRODUCT_OVERVIEW.md",
   backgroundJobsDoc:
     "https://github.com/Devpaul-01/StudyHub/blob/main/BACKGROUND_JOBS.md",
+  // Self-hosted, self-built gateway StudyHub's AI layer now routes every
+  // call through (see the `ai` section below) — a separate repo, linked
+  // directly from the StudyHub showcase rather than folded into it.
+  llmGateway: "https://github.com/Devpaul-01/llm-gateway",
   // StudyHub's CI suite runs as two separate GitHub Actions workflows
   // (unit-tests.yml, integration-tests.yml), so it gets two badges instead
   // of the single ciBadge/ciWorkflow pair kithContent.ts and
@@ -215,28 +219,35 @@ export const homework = {
 
 export const ai = {
   eyebrow: "\u00a708 \u00b7 LEARNORA \u2014 ONE AI LAYER, FIVE ENTRY POINTS",
-  heading: "Not five integrations. One classified retry engine behind all of them.",
+  heading: "Not five integrations. One gateway client behind all of them.",
   intro:
-    "Five product surfaces \u2014 standalone chat, post-context Q&A, thread @mentions, meeting-notes generation, and per-message AI actions \u2014 funnel into one engine rather than five hand-rolled retry loops with quietly drifting retry counts and timeouts.",
+    "Five product surfaces \u2014 standalone chat, post-context Q&A, thread @mentions, meeting-notes generation, and per-message AI actions \u2014 funnel into one engine rather than five hand-rolled retry loops with quietly drifting retry counts and timeouts. That engine used to hold six vendor API keys directly; it now holds one, because every call is routed through a self-built, self-hostable LLM gateway rather than talking to providers itself.",
+  gateway: {
+    heading: "Why a second service: moving the hard part out of the product codebase.",
+    body: "StudyHub used to be its own failover engine \u2014 per-key cooldowns, a provider blacklist, background model discovery, six vendor SDKs \u2014 all living inside the product's own request path. That's infrastructure, not product logic, so it moved out into its own repository: llm-gateway, a standalone service StudyHub (or anything else) talks to over one OpenAI-compatible endpoint.",
+    repoLabel: "Devpaul-01/llm-gateway",
+    repoDescription:
+      "A self-hosted LLM gateway: one project-scoped key in, a classified failover engine, circuit breaker, and encrypted credential storage for every real provider key on the other side. StudyHub is its first real caller.",
+  },
   classification: {
-    heading: "Not every provider failure means the same thing.",
-    body: "classify_provider_error() looks at real structured failure data \u2014 an HTTP status code, the provider's own parsed error body, a network-level exception type \u2014 and sorts every failure into exactly one of four categories, rather than treating a dead API key the same as a temporarily-down provider.",
+    heading: "Classification didn't disappear \u2014 it moved, and got sharper.",
+    body: "classify_provider_error() still sorts every failure into exactly one of four categories, but the categories now describe the gateway's own error surface rather than each vendor's raw API \u2014 because StudyHub is down to one upstream and one key, \u201ccool this key and rotate to another\u201d no longer means anything. That logic now lives in the gateway itself, across whichever providers are configured behind it.",
     rows: [
-      { category: "KEY_FAULT", trigger: "401 / 402 / 403 / 429", action: "Cool this specific key for an hour, advance the queue" },
-      { category: "PROVIDER_TRANSIENT", trigger: "5xx / network failure", action: "Advance the queue \u2014 do NOT cool the key" },
-      { category: "BAD_MODEL", trigger: "400 + a structured model-not-found signal", action: "Evict just that model from the shared cache" },
-      { category: "NON_RETRYABLE", trigger: "Anything else", action: "Stop the fallback chain immediately" },
+      { category: "KEY_FAULT", trigger: "unused against the gateway", action: "A 401/403 is a dead gateway key \u2014 hard misconfiguration, filed under NON_RETRYABLE instead" },
+      { category: "PROVIDER_TRANSIENT", trigger: "429 / 502 / 503 / 504 from the gateway", action: "Short cooldown on the gateway call \u2014 not a key swap, there's only one key" },
+      { category: "BAD_MODEL", trigger: "400 + a structured model-not-found signal", action: "Evict just that model from this process's fallback_models list" },
+      { category: "NON_RETRYABLE", trigger: "400 / 401 / 403 / 413", action: "Stop immediately \u2014 retrying against the same single gateway fails identically" },
     ],
   },
   streaming:
-    "Chat responses stream token-by-token. If a provider fails mid-stream, the system switches providers without the user noticing \u2014 no dropped connection, no resubmitted message, just a brief provider-switch signal the client already knows how to display.",
+    "Chat responses stream token-by-token. If a provider fails mid-stream, the gateway's own failover handles it on its side of the wire \u2014 StudyHub still just switches providers without the user noticing, no dropped connection, no resubmitted message.",
   fallback:
-    "One feature is worth calling out for its failure-mode design: the AI-generated \u201cwhy you two might connect well\u201d overview has a fully-functional template fallback built from the exact same compatibility data the AI prompt would have used. If every provider is down at once, the feature still works \u2014 it just isn't AI-written that moment.",
+    "One feature is worth calling out for its failure-mode design: the AI-generated \u201cwhy you two might connect well\u201d overview has a fully-functional template fallback built from the exact same compatibility data the AI prompt would have used. If the gateway is unreachable, the feature still works \u2014 it just isn't AI-written that moment.",
   image: studyhubAiProviderRouting,
   imageAlt:
-    "AI provider routing, classification, and failover diagram — entry points, call queue, and the four-way error classification",
+    "AI call routing and failover diagram — entry points, call queue, and the four-way error classification, now resolved against a single self-hosted gateway",
   imageCaption:
-    "Six providers back the system, with automatic model discovery keeping the ranked model list current without a manual config update.",
+    "A dozen providers are registered in the gateway itself (groq, mistral, openrouter, gemini, openai, deepseek, together, fireworks, cerebras, xai, deepinfra, sambanova) \u2014 StudyHub sends a ranked `fallback_models` chain and one project key; everything past that line is the gateway's job.",
 };
 
 // -- gamification / reputation ------------------------------------------------
@@ -414,7 +425,7 @@ export const stack = {
     { role: "Backend", items: ["Flask (Python)", "services/ + routes/ layering"] },
     { role: "Database", items: ["PostgreSQL (SQLAlchemy)"] },
     { role: "Real-time", items: ["Flask-SocketIO", "Redis pub/sub"] },
-    { role: "AI", items: ["Gemini", "Groq", "Cohere", "Cloudflare Workers AI", "Mistral", "OpenRouter"] },
+    { role: "AI", items: ["Self-hosted llm-gateway (own repo)", "OpenAI-compatible endpoint", "12 providers behind it"] },
     { role: "Background jobs", items: ["APScheduler", "RQ"] },
     { role: "Storage & media", items: ["Cloudinary"] },
     { role: "Email & push", items: ["Flask-Mail", "Firebase Cloud Messaging"] },
@@ -431,7 +442,7 @@ export const numbers = {
   stats: [
     { value: "49", label: "SQLAlchemy models across the schema" },
     { value: "12", label: "major product domains" },
-    { value: "6", label: "LLM providers behind one failover engine" },
+    { value: "1", label: "self-hosted gateway call replaces 6 direct vendor integrations" },
     { value: "5", label: "scheduled jobs, each Redis-lock guarded" },
     { value: "18", label: "gamification badges" },
     { value: "4", label: "distinct roles Redis serves \u2014 cache, lock, presence, queue" },
