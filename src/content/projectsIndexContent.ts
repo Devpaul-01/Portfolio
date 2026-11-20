@@ -293,10 +293,10 @@ export const projects: ProjectSummary[] = [
     title: "FounderSales",
     engineeringSubtitle: "Cost-Gated AI Pipeline & Distributed Failover",
     // Hook: costGating.heading/intro (decision made before the call) +
-    // aiReliability.intro (4-provider fallback chain, fixed priority order)
+    // aiReliability.intro (every call routed through a self-hosted gateway)
     // + practice.body[0] (4 sequential calls consolidated into 1).
     tagline:
-      "How I built a cost gate that decides whether to call the model before spending the call, behind a 4-provider fallback chain (Cerebras \u2192 Groq \u2192 Mistral \u2192 OpenRouter) with cross-instance Redis cooldown state.",
+      "How I built a cost gate that decides whether to call the model before spending the call, with every AI call routed through my own self-hosted gateway and a cross-instance Redis cooldown on its key.",
     // foundersalesContent.hero.headline + hero.subhead (trimmed) \u2014
     // kept as the secondary line so the card still says what the product is.
     summary:
@@ -319,9 +319,9 @@ export const projects: ProjectSummary[] = [
         source: "practice.body[0]",
       },
       {
-        // foundersalesContent.aiReliability.intro (fixed priority order) + classification
-        text: "Distributed cooldowns: a 4-provider fallback chain (Cerebras \u2192 Groq \u2192 Mistral \u2192 OpenRouter) classifies every failure into one of four categories, and key cooldowns are shared across instances via Redis so no node keeps hitting a key already known to be failing.",
-        source: "aiReliability.intro, distributedState.body[0]",
+        // foundersalesContent.aiReliability.gateway + classification
+        text: "Failure classification at the edge: failover moved out into my own gateway, but every failure is still sorted into one of four categories. A 429 for a spent daily budget is not a bad key, so it never triggers the Redis-shared cooldown that keeps every node off a genuinely rejected one.",
+        source: "aiReliability.classification, distributedState.body[0]",
       },
       {
         // foundersalesContent.distributedState.failureNote
@@ -331,8 +331,8 @@ export const projects: ProjectSummary[] = [
     ],
     stats: [
       {
-        value: "4",
-        label: "AI providers in one fallback chain",
+        value: "1",
+        label: "self-hosted gateway call replaces 4 direct provider integrations",
         source: "numbers.stats[0]",
       },
       {

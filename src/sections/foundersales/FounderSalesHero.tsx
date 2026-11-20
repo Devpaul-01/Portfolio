@@ -55,7 +55,7 @@ export default function FounderSalesHero() {
             href="#foundersales-ai"
             className="font-mono text-confirmed underline decoration-confirmed/30 underline-offset-2 transition-opacity hover:opacity-70"
           >
-            four-provider AI fallback chain
+            gateway-backed AI layer and failure classification
           </a>{" "}
           and the{" "}
           <a
