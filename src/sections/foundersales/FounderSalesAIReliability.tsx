@@ -1,4 +1,4 @@
-import { aiReliability } from "../../content/foundersalesContent";
+import { aiReliability, links } from "../../content/foundersalesContent";
 import SectionHeading from "../../components/SectionHeading";
 import DiagramFigure from "../../components/DiagramFigure";
 
@@ -11,7 +11,32 @@ export default function FounderSalesAIReliability() {
           {aiReliability.intro}
         </p>
 
-        <div className="mt-10 border border-ledger-line bg-white p-6 sm:p-7">
+        <div className="mt-8 border border-confirmed/30 bg-confirmed-soft/40 p-6 sm:p-7">
+          <p className="eyebrow mb-2 !text-confirmed">Own infrastructure, own repo</p>
+          <h3 className="font-display text-lg font-medium leading-snug text-ink">
+            {aiReliability.gateway.heading}
+          </h3>
+          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink/75">
+            {aiReliability.gateway.body}
+          </p>
+
+          <a
+            href={links.llmGateway}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 inline-flex items-center gap-2 border border-ledger-line bg-white px-4 py-3 transition-opacity hover:opacity-70"
+          >
+            <span className="font-mono text-xs font-medium tracking-wide text-ink">
+              {aiReliability.gateway.repoLabel}
+            </span>
+            <span className="font-mono text-xs text-confirmed">&rarr;</span>
+          </a>
+          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-ink/60">
+            {aiReliability.gateway.repoDescription}
+          </p>
+        </div>
+
+        <div className="mt-6 border border-ledger-line bg-white p-6 sm:p-7">
           <h3 className="font-display text-lg font-medium leading-snug text-ink">
             {aiReliability.classification.heading}
           </h3>

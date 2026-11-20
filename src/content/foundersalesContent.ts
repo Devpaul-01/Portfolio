@@ -15,9 +15,9 @@ import fsMetricsOverview from "../assets/metrics-overview.png";
 import fsMetricsPipeline from "../assets/metrics-pipeline.png";
 import fsInsightsPatterns from "../assets/insights-patterns.png";
 
-import fsSystemOverview from "../assets/fs-system-overview.png";
-import fsAiFallbackChain from "../assets/fs-ai-fallback-chain.png";
-import fsCrossInstance from "../assets/fs-cross-instance-coordination.png";
+import fsSystemOverview from "../assets/fs-system-overview.svg";
+import fsAiGatewayClient from "../assets/fs-ai-gateway-client.svg";
+import fsCrossInstance from "../assets/fs-cross-instance-coordination.svg";
 import fsCostGating from "../assets/fs-calendar-cost-gating.png";
 import fsQueueTopology from "../assets/fs-queue-topology.png";
 import fsVoiceMemoPipeline from "../assets/fs-voice-memo-pipeline.png";
@@ -29,13 +29,16 @@ export const links = {
   architectureDoc: "https://github.com/Devpaul-01/Foundersales/blob/main/ARCHITECTURE.md",
   backgroundJobsDoc: "https://github.com/Devpaul-01/Foundersales/blob/main/BACKGROUND_JOBS.md",
   productDoc: "https://github.com/Devpaul-01/Foundersales/blob/main/PRODUCT_OVERVIEW.md",
+  // Self-built, self-hosted gateway every AI chat call now routes through
+  // (see aiReliability below), linked directly rather than folded in here.
+  llmGateway: "https://github.com/Devpaul-01/llm-gateway",
 };
 
 export const hero = {
   eyebrow: "ENGINEERING CASE STUDY",
   headline: "An AI sales coach that decides whether an AI call is worth making.",
   subhead:
-    "FounderSales is a multi-tenant sales coaching and outreach platform for founders who have never done outbound before. Discovery, drafted outreach, a simulated buyer to rehearse against, meeting prep and coaching all draw on one voice profile. This page walks through the backend that makes that reliable: a four-provider AI fallback chain, Redis-coordinated state, three purpose-built job queues, and a cost gate that runs before the model call.",
+    "FounderSales is a multi-tenant sales coaching and outreach platform for founders who have never done outbound before. Discovery, drafted outreach, a simulated buyer to rehearse against, meeting prep and coaching all draw on one voice profile. This page walks through the backend that makes that reliable: an AI layer that routes every call through a self-built gateway, Redis-coordinated state, three purpose-built job queues, and a cost gate that runs before the model call.",
   statusNote:
     "Actively in development, built solo. Large parts of the backend are solid and documented; some pieces are still half-wired, and this page names them in the Honest Gaps section. There is no live deployment linked yet, and no billing system.",
   image: fsHomeDashboard,
@@ -112,7 +115,7 @@ export const surface = {
       imageAlt:
         "Opportunity detail with pain points, talking points, risks, and a generated outreach message",
       caption:
-        "The detail view runs a live search plus two parallel Groq calls (research brief, outreach specifics) and caches the snapshot on the row for 7 days, so repeat views cost nothing.",
+        "The detail view runs a live search plus two parallel AI calls (research brief, outreach specifics) and caches the snapshot on the row for 7 days, so repeat views cost nothing.",
     },
     {
       image: fsPipelineKanban,
@@ -122,35 +125,43 @@ export const surface = {
     },
   ],
   searchGateNote:
-    "Before spending an Exa credit, a cheap AI router decides whether a live search has a good chance of finding anything. If it says no, or the workspace's daily quota is spent, the system falls back to Groq-generated practice examples, clearly flagged is_example: true and never presented as real leads.",
+    "Before spending an Exa credit, a cheap AI router decides whether a live search has a good chance of finding anything. If it says no, or the workspace's daily quota is spent, the system falls back to AI-generated practice examples, clearly flagged is_example: true and never presented as real leads.",
 };
 
 export const aiReliability = {
   eyebrow: "§04 · AI RELIABILITY",
-  heading: "Not one API call with a try/catch. A fallback chain that knows whose fault a failure is.",
+  heading: "Not one API call with a try/catch. A gateway client that knows whose fault a failure is.",
   intro:
-    "Every AI feature routes through one function, callWithFallback(messages, tier). It builds a queue of (provider, model, key) entries in fixed priority order (Cerebras, Groq, Mistral, OpenRouter, chosen by free-tier throughput), and tries them until one succeeds. Each provider carries multiple keys from separate accounts, so one account hitting its limit does not take the provider out of rotation.",
-  classification: {
-    heading: "Four categories, because 'retryable or not' is the wrong question.",
+    "Every AI feature routes through one function, callWithFallback(messages, tier), which sends a single OpenAI-compatible request to a self-hosted gateway. That function used to be the failover engine itself: a fixed Cerebras, Groq, Mistral, OpenRouter queue with a key pool per provider and a Redis-cached model-discovery subsystem. It now holds one key, because the failover moved into its own service.",
+  gateway: {
+    heading: "Why a second service: moving the hard part out of the product codebase.",
     body:
-      "classifyProviderError() reads the real structured failure data (HTTP status, the provider's parsed error body, a network error code) captured when a typed ProviderCallError is thrown. It replaced substring matching on a formatted message, which could not distinguish an actual HTTP 500 from a token count that happened to contain those digits.",
+      "A product's request path is the wrong home for per-key cooldowns, model discovery and provider rotation. That logic moved into llm-gateway, a Go service of my own that fronts many providers. FounderSales sends a primary model, a fallback_models chain and one project key; alias resolution, upstream key rotation and failover happen on the gateway's side. The exported contract (callWithFallback, callWithFallbackGroq, streamWithFallback, getProviderStatus) did not change, so none of the roughly two dozen call sites were touched, and the file shrank from about a thousand lines to under five hundred.",
+    repoLabel: "Devpaul-01/llm-gateway",
+    repoDescription:
+      "A self-hosted LLM gateway: one project-scoped key in, a classified failover engine, circuit breaker and encrypted credential storage for every real provider key on the other side. FounderSales and StudyHub both call it.",
+  },
+  classification: {
+    heading: "Classification didn't disappear. It moved, and got sharper.",
+    body:
+      "classifyProviderError() still reads the real structured failure data (HTTP status, the parsed error body, a network error code) captured when a typed ProviderCallError is thrown, and still sorts every failure into one of four categories. What changed is what the categories describe: the gateway's error surface, not each vendor's raw API. The one non-obvious case is 429. The gateway uses it for three different conditions, told apart only by error.code, and only one of them means the key is bad.",
     rows: [
-      { category: "KEY_FAULT", trigger: "401 / 403 / 429", action: "Cool this specific key for an hour and move to the next key or provider" },
-      { category: "PROVIDER_TRANSIENT", trigger: "500 / 502 / 503 / 504, or network error", action: "Move on, and do NOT cool the key. Cooling it would leave it unavailable for an hour over an outage unrelated to it" },
-      { category: "BAD_MODEL", trigger: "400 with a model-not-found signal in the response body", action: "Evict just that model from the shared Redis model cache; the key stays healthy" },
-      { category: "NON_RETRYABLE", trigger: "Anything else", action: "Report to Sentry and stop the chain. Retrying a malformed request against three more providers only reproduces the bug" },
+      { category: "KEY_FAULT", trigger: "401 / 403, or a plain 429", action: "Cool the gateway key for an hour, shared across instances via Redis, so no instance keeps hammering a rejected credential" },
+      { category: "PROVIDER_TRANSIENT", trigger: "5xx, network error, or a 429 whose error.code is daily_token_budget_exceeded or too_many_concurrent_requests", action: "Do NOT cool the key. A spent daily budget resets at UTC midnight and a concurrency slot frees in seconds; neither is the key's fault" },
+      { category: "BAD_MODEL", trigger: "400 with a model-not-found signal in the response body", action: "No discovery cache left to evict from; model names are the gateway's responsibility" },
+      { category: "NON_RETRYABLE", trigger: "Anything else", action: "Capture to Sentry with its category. A malformed request fails identically on retry, so there is nothing to retry" },
     ],
   },
-  image: fsAiFallbackChain,
+  image: fsAiGatewayClient,
   imageAlt:
-    "AI provider fallback chain flow: callWithFallback builds a provider queue, attempts each provider/model/key, and classifies failures into key fault, provider transient, bad model, and non-retryable",
+    "AI gateway client flow: callWithFallback checks the key is configured and not cooling, sends one OpenAI-compatible request to llm-gateway, and classifies any failure into key fault, provider transient, bad model, or non-retryable",
   imageCaption:
-    "The queue loop. KEY_FAULT, PROVIDER_TRANSIENT and BAD_MODEL all return to the loop; only NON_RETRYABLE aborts.",
+    "There is no retry loop any more: with one upstream and one key, 'try the next key or provider' has nothing to try. That decision lives in the gateway, which can see every provider behind it.",
   extras: [
     {
       title: "Selective vision routing",
       body:
-        "Only two models in the whole priority list can read images. The request is restructured into a multipart payload only when the model about to be called on this attempt is vision-capable; every other model gets the plain-text request with a placeholder. A fallback landing on a non-vision model degrades gracefully instead of sending a malformed request.",
+        "gpt-oss-120b cannot read images, and a fallback list can't help if the first attempt can't see the image. So a request with attachments sends a vision-capable model as the primary, with vision-capable fallbacks, and attaches the images to the last user message only. Which upstream actually serves it is the gateway's call, and the model that answered comes back in its response metadata.",
     },
     {
       title: "Structured output, two strategies on purpose",
@@ -162,25 +173,24 @@ export const aiReliability = {
 
 export const distributedState = {
   eyebrow: "§05 · DISTRIBUTED STATE",
-  heading: "One instance discovers a bad key. Every other instance already knows.",
+  heading: "One instance discovers a rejected key. Every other instance already knows.",
   body: [
-    "Without shared state, an instance that sees a key return 429 has no way to tell any other instance, so every one of them keeps sending traffic to a key already known to be failing until each independently rediscovers the same failure. Key cooldowns are stored as a Redis hash per (provider, keyIndex) with a one-hour expiry, and the cooldown check is a key-existence test rather than timestamp arithmetic.",
+    "Without shared state, an instance that sees the gateway reject its key has no way to tell any other instance, so every one of them keeps sending traffic to a credential already known to be failing until each independently rediscovers the same failure. The cooldown is stored as a Redis hash per (provider, keyIndex) with a one-hour expiry, and the check is a key-existence test rather than timestamp arithmetic. It used to be a pool of keys across four providers; it is now a single slot, but the mechanism is unchanged.",
     "The same module, providerCooldown.js, is generic over an arbitrary provider string, which is why Exa's search-key rotation shares the exact mechanism instead of keeping a structurally identical copy that could drift.",
-    "Model discovery works the same way: cached in Redis for six hours and refreshed by whichever instance wins a short-lived distributed lock (SET NX PX with a Lua compare-and-delete release, 15s TTL), rather than every instance hitting every provider's /models endpoint on every boot.",
+    "The model-discovery cache and its distributed lock, which used to be refreshed by whichever instance won a SET NX PX race, were removed along with the provider pool, because the gateway resolves model names itself.",
   ],
   image: fsCrossInstance,
   imageAlt:
-    "Sequence diagram: Instance 1 sees a Groq key return 429 and writes a cooldown hash to Redis; Instance 2 later reads it and excludes the key from its queue with no wasted request",
+    "Sequence diagram: Instance 1 sees the gateway return 401 and writes a cooldown hash to Redis; Instance 2 later reads it and fails fast with no request sent",
   imageCaption:
-    "Instance 2 never attempts key #3. The wasted 429 is avoided, not just retried.",
+    "Instance 2 never sends the request. The wasted 401 is avoided, not just retried.",
   redisRoles: {
-    heading: "Redis serves six different roles here, not one 'caching layer'.",
+    heading: "Redis serves five different roles here, not one 'caching layer'.",
     rows: [
-      { role: "Caching", detail: "30s auth profile and workspace context, 4-24h report caches, 6h model lists" },
+      { role: "Caching", detail: "30s auth profile and workspace context, 4-24h report caches" },
       { role: "Queues", detail: "BullMQ over a separate ioredis connection, isolated from the client used for everything else" },
       { role: "Rate limiting", detail: "Namespaced stores wrapping the shared client, one key prefix per limiter" },
-      { role: "Distributed locks", detail: "Model-discovery refresh, with Lua compare-and-delete release" },
-      { role: "Cross-instance coordination", detail: "Provider and Exa key cooldowns" },
+      { role: "Cross-instance coordination", detail: "Gateway-key and Exa key cooldowns" },
       { role: "Concurrency guard", detail: "Sorted set of in-flight calls scored by timestamp; abandoned slots age out via a staleness sweep instead of a shared TTL" },
     ],
   },
@@ -192,7 +202,7 @@ export const distributedState = {
   killSwitch: {
     eyebrow: "Reversible rollout",
     body:
-      "MULTIPROVIDER_REDIS_STATE_ENABLED reverts the AI layer to the original in-memory cooldown and discovery behaviour with no deploy. This is the highest-traffic file in the codebase, so the in-memory path was kept as a deliberate escape hatch rather than deleted.",
+      "MULTIPROVIDER_REDIS_STATE_ENABLED reverts the AI layer to in-memory cooldown state with no deploy. This is the highest-traffic file in the codebase, so the in-memory path was kept as a deliberate escape hatch rather than deleted.",
   },
 };
 
@@ -232,7 +242,7 @@ export const costGating = {
     "Calendar AI is the feature most deliberately engineered around not spending calls reflexively. Every trigger passes through calendarAiGate.js, which returns proceed or skip with a reason, and every decision, in both directions, is written to calendar_ai_events.",
   gates: [
     { fn: "shouldGeneratePrep", checks: "Has attendee context? Low-stakes event type with no linked deal?", outcome: "Skip yields a non-AI placeholder that still flips prep_generated so the UI never spins. Proceed picks the 'quality' tier if tied to a deal or a demo, otherwise 'fast'." },
-    { fn: "shouldRunResearch", checks: "Already researched? Researched under 14 days ago for this same prospect on any event? Workspace quota available?", outcome: "Reuse existing research at zero cost, skip on quota, or run Exa search plus Groq synthesis." },
+    { fn: "shouldRunResearch", checks: "Already researched? Researched under 14 days ago for this same prospect on any event? Workspace quota available?", outcome: "Reuse existing research at zero cost, skip on quota, or run Exa search plus AI synthesis." },
     { fn: "shouldExtractCommitmentsSignals", checks: "Notes at least 20 characters?", outcome: "One call extracts commitments AND signals. This replaced two separate calls on the same input text, and debrief submission is the highest-frequency AI trigger in the feature." },
     { fn: "shouldGenerateFollowUp", checks: "Outcome is 'dead' with no next-step recommendation?", outcome: "Skip, or generate three variants: brief, substantive, re-engagement." },
   ],
@@ -415,10 +425,10 @@ export const reliability = {
     { label: "Uploads", detail: "MIME validated in the multer filter and against received bytes; chat attachments capped by an aggregate 16,000-character budget so a large file cannot balloon what is sent to the model." },
     { label: "Boot ordering", detail: "The HTTP server starts before background jobs. If Redis is unreachable the API still serves traffic; each of the four job-startup steps is wrapped independently." },
     { label: "Graceful shutdown", detail: "An earlier scheduled-worker handler called process.exit(0) right after worker.close(), killing the process before the practice worker could drain. That call was removed so shutdown is cooperative; the worker-only entry point adds a bounded 10-second force-exit." },
-    { label: "Sentry placement", detail: "Most AI failures never reach automatic Express capture because feature functions catch their own errors. Explicit capture sits at two choke points: NON_RETRYABLE and ALL_PROVIDERS_FAILED. Key faults and transient errors are deliberately not sent, since the chain exists to absorb them." },
+    { label: "Sentry placement", detail: "Most AI failures never reach automatic Express capture because feature functions catch their own errors, so explicit capture sits in the one gateway client. Every failed call is reported as ALL_PROVIDERS_FAILED, and NON_RETRYABLE ones also carry their category. With a single upstream there is no chain left to absorb key faults and transient errors, so they are no longer filtered out." },
   ],
   testingNote:
-    "Tests use Vitest on the pure or extractable logic: pagination, provider error classification, momentum scoring, and workspace-profile array resolution. CI runs on every push. The README does not claim broader coverage.",
+    "Tests use Vitest on the pure or extractable logic: pagination, provider error classification (including the gateway's 429 budget and concurrency codes), the gateway client's request shape and cooldown behaviour, momentum scoring, and workspace-profile array resolution. CI runs on every push. The README does not claim broader coverage.",
 };
 
 export const architecture = {
@@ -428,7 +438,7 @@ export const architecture = {
     "A layered Express API (routes, middleware, controllers, services) on Supabase Postgres, with three BullMQ workers. It runs as a single combined process (app.js, what npm start runs) or as two independent processes: server.js for the API only, and workers/index.js for the scheduler and all three workers with no HTTP server. Both entry points are fully wired. The combined process remains the default. The split topology is available and correct, but adopting it as the deployment shape is a decision that has not been made yet.",
   image: fsSystemOverview,
   imageAlt:
-    "System architecture: client, request perimeter, auth chain, application layer, asynchronous processing, Postgres, Redis, the four-provider AI layer, and external services",
+    "System architecture: client, request perimeter, auth chain, application layer, asynchronous processing, Postgres, Redis, the AI layer (self-hosted llm-gateway plus direct Groq Whisper), and external services",
   imageCaption:
     "The full frame. The reason it is not microservices: the domain is a small number of tightly related entities with cross-cutting AI concerns, cheaper to share as one process's library code. The one genuine seam is synchronous requests versus asynchronous work.",
 };
@@ -454,6 +464,14 @@ export const honestGaps = {
         "Authorisation is enforced by the middleware chain (authenticate, workspace membership, rate limit). That is correct as long as the chain is never bypassed.",
       reason: "There is no independent database-layer backstop today. A route that forgot its membership check would have nothing underneath it.",
       tag: "Known gap 2",
+    },
+    {
+      title: "Two Groq paths still bypass the gateway.",
+      problem: "Voice-memo transcription calls Groq Whisper directly, and a legacy chat client (groq-client.js) is still in the tree.",
+      decision:
+        "The gateway has no audio endpoint, so transcription stays a direct integration with its own key pool. The legacy client is re-exported through a barrel file but no route or job calls it; every live chat path goes through the gateway client.",
+      reason: "Both were left alone on purpose to keep the migration scoped. The legacy client is dead code that should be deleted, and the gateway is now a single upstream: if it is down, every AI feature is down.",
+      tag: "Known gap 3",
     },
     {
       title: "Booking pages exist at schema level only.",
@@ -482,7 +500,7 @@ export const stack = {
     { role: "Runtime", items: ["Node.js", "Express 4", "ESM modules"] },
     { role: "Data", items: ["Supabase Postgres", "supabase-js query builder", "Postgres RPCs", "pg_trgm"] },
     { role: "Cache and queues", items: ["Redis", "BullMQ", "ioredis", "rate-limit-redis"] },
-    { role: "AI", items: ["Cerebras", "Groq (chat + Whisper)", "Mistral", "OpenRouter", "Exa search"] },
+    { role: "AI", items: ["Self-hosted llm-gateway (own repo)", "OpenAI-compatible endpoint", "Groq Whisper (voice memos)", "Exa search"] },
     { role: "Auth and validation", items: ["Supabase Auth", "JWT bearer + cookie refresh", "Zod"] },
     { role: "Storage and delivery", items: ["Cloudinary", "Firebase Cloud Messaging", "Resend / SMTP"] },
     { role: "Ops", items: ["Sentry", "Bull Board", "Helmet", "Vitest + GitHub Actions"] },
@@ -492,11 +510,11 @@ export const stack = {
 export const numbers = {
   eyebrow: "§16 · BY THE NUMBERS",
   stats: [
-    { value: "4", label: "AI providers in one fallback chain" },
+    { value: "1", label: "self-hosted gateway call replaces 4 direct provider integrations" },
     { value: "4", label: "failure categories, classified from structured status and body" },
     { value: "3", label: "BullMQ queues, each with its own worker and concurrency" },
     { value: "21", label: "cron-registered scheduled jobs" },
-    { value: "6", label: "distinct roles Redis serves" },
+    { value: "5", label: "distinct roles Redis serves" },
     { value: "9", label: "atomic Postgres RPCs for race-prone writes" },
   ],
   ciNote: "Live build status from the repository's own CI workflow, not a static badge.",

@@ -7,7 +7,7 @@ Source for my portfolio site. Five engineering case studies, each written around
 | 1 | **Agent Broker** | Keeping a shared budget, delegation limit and circuit breaker correct across independent processes, in two languages, using atomic Redis Lua scripts. Published on npm. | [agent-broker](https://github.com/Devpaul-01/agent-broker) |
 | 2 | **Kith** | A multi-tenant family ledger with append-only entries, idempotent writes and atomic disputes. | [Kith](https://github.com/Devpaul-01/Kith) |
 | 3 | **StudyHub** | Multi-worker refactor and classified AI failover. | see site |
-| 4 | **FounderSales** | Cost-gated AI pipeline and distributed failover. | see site |
+| 4 | **FounderSales** | Cost-gated AI pipeline, with every AI call routed through my own self-hosted gateway. | see site |
 | 5 | **LLM Gateway** | An open-source Go reverse proxy: atomic rate, concurrency and token-budget gates in Redis, a cache that refuses to store degraded answers, and stream-safe failover across twelve providers. [Live demo](https://llm-gateway-studyhubplatform.vercel.app/demo) | [llm-gateway](https://github.com/Devpaul-01/llm-gateway) |
 
 ## Run it
